@@ -587,9 +587,14 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: "Terjadi kesalahan pada server" });
 });
 
-app.listen(PORT, () => {
-  console.log("=".repeat(50));
-  console.log(`EcoHub API berjalan di http://localhost:${PORT}`);
-  console.log(`Database: ${DB_PATH}`);
-  console.log("=".repeat(50));
-});
+if (require.main === module) {
+
+  app.listen(PORT, () => {
+    console.log("=".repeat(50));
+    console.log(`EcoHub API berjalan di http://localhost:${PORT}`);
+    console.log(`Database: ${DB_PATH}`);
+    console.log("=".repeat(50));
+  });
+}
+
+module.exports = app;
