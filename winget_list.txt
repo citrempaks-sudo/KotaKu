@@ -1,0 +1,3 @@
+﻿Failed in attempting to update the source: winget
+Failed when searching source; results will not be included: winget
+No installed package found matching input criteria.

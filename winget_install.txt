@@ -1,0 +1,6 @@
+﻿Failed in attempting to update the source: winget
+Failed when searching source: winget
+An unexpected error occurred while executing the command: 
+0x8a15000f : Data required by the source is missing
+
+No packages were found among the working sources.

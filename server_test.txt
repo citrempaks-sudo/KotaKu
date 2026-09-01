@@ -1,0 +1,10 @@
+﻿At line:1 char:290
++ ... :8080/api/reports' -UseBasicParsing; Write-Host ('STATUS: ' + .Status ...
++                                                                  ~
+You must provide a value expression following the '+' operator.
+At line:1 char:291
++ ... ports' -UseBasicParsing; Write-Host ('STATUS: ' + .StatusCode); Write ...
++                                                       ~~~~~~~~~~~
+Unexpected token '.StatusCode' in expression or statement.
+At line:1 char:290
++ ... :8080/api/reports' -UseBasicParsing; Write-Host ('STATUS: ' + .Status ...

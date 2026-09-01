@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KotaKu - Solusi Smart City & Ekonomi Sirkular</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Poppins', 'sans-serif'], }, }, }, }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"
+            onerror="this.onerror=null;this.src='https://unpkg.com/@tensorflow/tfjs@3.21.0/dist/tf.min.js';"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js"
+            onerror="this.onerror=null;this.src='https://unpkg.com/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js';"></script>
+    <link rel="stylesheet" href="CSS.css">
+    
+</head>
+<body class="light-mode">
+
+<div id="loading-screen" aria-hidden="true">
+    <div class="loader-vignette"></div>
+
+    <i class="fa-solid fa-leaf loader-leaf" style="left:10%; animation-duration:8s; animation-delay:0s; font-size:18px;"></i>
+    <i class="fa-solid fa-leaf loader-leaf" style="left:26%; animation-duration:11s; animation-delay:1.6s; font-size:13px;"></i>
+    <i class="fa-solid fa-seedling loader-leaf" style="left:48%; animation-duration:12.5s; animation-delay:0.4s; font-size:16px;"></i>
+    <i class="fa-solid fa-leaf loader-leaf" style="left:66%; animation-duration:9.5s; animation-delay:0.8s; font-size:20px;"></i>
+    <i class="fa-solid fa-leaf loader-leaf" style="left:84%; animation-duration:10.5s; animation-delay:2.1s; font-size:14px;"></i>
+
+    <div class="loader-content">
+        <div class="loader-logo-wrap">
+            <div class="loader-ring-outer"></div>
+            <div class="loader-ring-inner"></div>
+            <div class="loader-logo-glow"></div>
+            <img src="logo.jpeg" alt="KotaKu" class="loader-logo-img">
+        </div>
+
+        <div class="loader-brand">KotaKu</div>
+        <p class="loader-tagline">Solusi Smart City &amp; Ekonomi Sirkular</p>
+
+        <div class="loader-progress-track">
+            <div class="loader-progress-fill" id="loader-progress-fill"></div>
+        </div>
+
+        <div class="loader-status">
+            <span id="loader-percent">0%</span>
+            <span>&middot;</span>
+            <span>Menyiapkan kota pintar Anda</span>
+            <span class="loader-dot">.</span><span class="loader-dot">.</span><span class="loader-dot">.</span>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var loader = document.getElementById('loading-screen');
+    var fill = document.getElementById('loader-progress-fill');
+    var percentEl = document.getElementById('loader-percent');
+    if (!loader || !fill || !percentEl) return;
+
+    var progress = 0;
+    var cap = 92;
+    var timer = setInterval(function () {
+        if (progress < cap) {
+            progress += Math.random() * 6 + 2;
+            if (progress > cap) progress = cap;
+            fill.style.width = progress + '%';
+            percentEl.textContent = Math.floor(progress) + '%';
+        }
+    }, 180);
+
+    function hideLoader() {
+        clearInterval(timer);
+        fill.style.width = '100%';
+        percentEl.textContent = '100%';
+        setTimeout(function () {
+            loader.style.opacity = '0';
+            loader.style.pointerEvents = 'none';
+            setTimeout(function () {
+                loader.style.display = 'none';
+            }, 500);
+        }, 250);
+    }
+
+    if (document.readyState === 'complete') {
+        hideLoader();
+    } else {
+        window.addEventListener('load', hideLoader);
+    }
+
+    setTimeout(hideLoader, 8000);
+})();
+</script>
+
+<div id="eco-premium-bg" class="fixed inset-0 pointer-events-none z-[-2] overflow-hidden transition-colors duration-700">
+
+    <div class="absolute inset-0 transition-transform duration-300" data-speed="0.04">
+        <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 500" opacity="0.65">
+            <polygon points="0,0 260,0 120,140" fill="var(--sky-facet-a)"/>
+            <polygon points="260,0 520,0 360,110 120,140" fill="var(--sky-facet-b)"/>
+            <polygon points="520,0 760,0 620,160 360,110" fill="var(--sky-facet-a)"/>
+            <polygon points="760,0 1050,0 900,120 620,160" fill="var(--sky-facet-b)"/>
+            <polygon points="1050,0 1200,0 1200,180 900,120" fill="var(--sky-facet-a)"/>
+            <polygon points="0,0 120,140 0,260" fill="var(--sky-facet-b)"/>
+            <polygon points="1200,180 1200,340 900,120" fill="var(--sky-facet-b)"/>
+            <polygon points="0,260 120,140 240,320 0,420" fill="var(--sky-facet-a)"/>
+            <polygon points="240,320 360,110 620,160 480,360 " fill="var(--sky-facet-b)"/>
+            <polygon points="620,160 900,120 780,380 480,360" fill="var(--sky-facet-a)"/>
+            <polygon points="900,120 1200,340 1050,460 780,380" fill="var(--sky-facet-b)"/>
+            <polygon points="0,420 240,320 300,500 0,500" fill="var(--sky-facet-b)"/>
+            <polygon points="1050,460 1200,340 1200,500 950,500" fill="var(--sky-facet-a)"/>
+        </svg>
+        <div class="sunburst"></div>
+        <div class="stars-container"></div>
+        <div class="celestial-body sun"></div>
+        <div class="celestial-body moon"></div>
+        <div class="hidden md:block eco-accent-drift" style="top:22%; left:15%; animation-duration: 22s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--tree-color)" opacity="0.35"><path d="M12,2 C6,2 2,7 2,13 C2,18 6,22 12,22 C12,15 12,8 12,2 Z"/></svg>
+        </div>
+        <div class="hidden md:block eco-accent-drift" style="top:38%; left:78%; animation-duration: 28s; animation-delay: 4s;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--primary-teal)" opacity="0.3"><path d="M12,2 C6,2 2,7 2,13 C2,18 6,22 12,22 C12,15 12,8 12,2 Z"/></svg>
+        </div>
+    </div>
+
+    <div class="absolute inset-0 transition-transform duration-300" data-speed="0.06">
+        <svg class="absolute top-[8%] w-full eco-layer-cloud1" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1000 200">
+            <g class="cloud cloud-1" fill="var(--cloud-color)">
+                <circle cx="120" cy="90" r="22"/><circle cx="145" cy="80" r="28"/><circle cx="175" cy="90" r="20"/><rect x="105" y="88" width="90" height="18" rx="9"/>
+            </g>
+            <g class="cloud cloud-2" fill="var(--cloud-color)">
+                <circle cx="430" cy="55" r="26"/><circle cx="465" cy="45" r="32"/><circle cx="505" cy="55" r="24"/><rect x="410" y="52" width="115" height="20" rx="10"/>
+            </g>
+            <g class="cloud cloud-3" fill="var(--cloud-color)">
+                <circle cx="810" cy="110" r="18"/><circle cx="832" cy="102" r="22"/><circle cx="858" cy="110" r="16"/><rect x="797" y="108" width="72" height="16" rx="8"/>
+            </g>
+        </svg>
+        <svg class="absolute top-[6%] w-full eco-layer-cloud2" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1000 150" fill="none" stroke="var(--tree-color)" stroke-width="2.5" stroke-linecap="round" opacity="0.7">
+            <path d="M220,40 q8,-10 16,0 q8,-10 16,0"/>
+            <path d="M255,55 q6,-8 12,0 q6,-8 12,0"/>
+            <path d="M700,30 q8,-10 16,0 q8,-10 16,0"/>
+            <path d="M735,20 q6,-8 12,0 q6,-8 12,0"/>
+            <path d="M770,45 q6,-8 12,0 q6,-8 12,0"/>
+        </svg>
+        <div id="birds-container" class="absolute top-[15%] w-full h-full"></div>
+    </div>
+
+    <div class="absolute w-full eco-layer-hills transition-transform duration-300" data-speed="0.08">
+        <svg class="w-full h-full" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1000 200">
+            <path d="M-50,200 Q150,90 350,200 Z" fill="var(--mountain-far)"/>
+            <path d="M220,200 Q470,70 720,200 Z" fill="var(--mountain-mid)"/>
+            <path d="M580,200 Q820,100 1050,200 Z" fill="var(--mountain-close)"/>
+        </svg>
+    </div>
+
+    <div class="absolute w-full eco-layer-city transition-transform duration-300" data-speed="0.05">
+        <svg class="w-full h-full absolute bottom-0" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 300">
+            <rect x="80" y="150" width="90" height="150" fill="var(--building-color)" rx="6"/>
+            <rect x="190" y="90" width="110" height="210" fill="var(--building-dark)" rx="6"/>
+            <rect x="700" y="120" width="95" height="180" fill="var(--building-dark)" rx="6"/>
+            <rect x="810" y="170" width="140" height="130" fill="var(--building-color)" rx="6"/>
+            <rect x="980" y="140" width="90" height="160" fill="var(--building-dark)" rx="6"/>
+
+            <g transform="translate(360,90)">
+                <rect x="0" y="60" width="140" height="140" fill="var(--building-color)" rx="4"/>
+                <path d="M-10,60 L70,10 L150,60 Z" fill="var(--building-dark)"/>
+                <circle cx="70" cy="40" r="14" fill="var(--window-light)"/>
+                <rect x="20" y="130" width="16" height="70" fill="var(--road-color)"/>
+                <rect x="60" y="130" width="16" height="70" fill="var(--road-color)"/>
+                <rect x="100" y="130" width="16" height="70" fill="var(--road-color)"/>
+            </g>
+
+            <g transform="translate(540,190)">
+                <rect x="0" y="20" width="90" height="90" fill="var(--building-color)" rx="4"/>
+                <path d="M-6,20 L96,20 L86,4 L4,4 Z" fill="var(--primary-purple)"/>
+                <rect x="30" y="60" width="30" height="50" fill="var(--road-color)"/>
+            </g>
+
+            <g class="city-lights">
+                <rect x="100" y="175" width="12" height="14" fill="var(--window-light)" rx="2"/>
+                <rect x="130" y="205" width="12" height="14" fill="var(--window-light)" rx="2"/>
+                <rect x="210" y="115" width="14" height="16" fill="var(--window-light)" rx="2"/>
+                <rect x="245" y="150" width="14" height="16" fill="var(--window-light)" rx="2"/>
+                <rect x="245" y="190" width="14" height="16" fill="var(--window-light)" rx="2"/>
+                <rect x="720" y="150" width="14" height="16" fill="var(--window-light)" rx="2"/>
+                <rect x="840" y="195" width="18" height="16" fill="var(--window-light)" rx="2"/>
+                <rect x="890" y="195" width="18" height="16" fill="var(--window-light)" rx="2"/>
+                <rect x="1000" y="165" width="14" height="16" fill="var(--window-light)" rx="2"/>
+                <rect x="1030" y="200" width="14" height="16" fill="var(--window-light)" rx="2"/>
+            </g>
+
+            <g transform="translate(605,60)">
+                <rect x="0" y="40" width="18" height="200" fill="var(--building-dark)"/>
+                <path d="M9,-25 C-15,-5 -10,25 9,40 C28,25 33,-5 9,-25 Z" fill="var(--primary-green)"/>
+                <path d="M9,-10 L9,38" stroke="var(--building-dark)" stroke-width="2"/>
+            </g>
+
+            <g transform="translate(120,195.5) scale(0.55)">
+                <rect x="47" y="50" width="6" height="140" fill="var(--road-line)"/>
+                <g class="spin-center" style="transform-origin: 50px 50px; animation: spinTurbine 9s linear infinite;">
+                    <circle cx="50" cy="50" r="6" fill="var(--road-line)"/>
+                    <path d="M50,48 C35,25 40,5 50,0 C60,5 65,25 50,48 Z" fill="var(--primary-green)"/>
+                    <path d="M50,48 C35,25 40,5 50,0 C60,5 65,25 50,48 Z" fill="var(--primary-green)" transform="rotate(120 50 50)"/>
+                    <path d="M50,48 C35,25 40,5 50,0 C60,5 65,25 50,48 Z" fill="var(--primary-green)" transform="rotate(240 50 50)"/>
+                </g>
+            </g>
+            <g transform="translate(1080,224) scale(0.4)">
+                <rect x="47" y="50" width="6" height="140" fill="var(--road-line)"/>
+                <g class="spin-center" style="transform-origin: 50px 50px; animation: spinTurbine 7s linear infinite reverse;">
+                    <circle cx="50" cy="50" r="6" fill="var(--road-line)"/>
+                    <path d="M50,48 C35,25 40,5 50,0 C60,5 65,25 50,48 Z" fill="var(--primary-teal)"/>
+                    <path d="M50,48 C35,25 40,5 50,0 C60,5 65,25 50,48 Z" fill="var(--primary-teal)" transform="rotate(120 50 50)"/>
+                    <path d="M50,48 C35,25 40,5 50,0 C60,5 65,25 50,48 Z" fill="var(--primary-teal)" transform="rotate(240 50 50)"/>
+                </g>
+            </g>
+        </svg>
+
+        <div class="hidden sm:block absolute balloon-anim w-12 h-16 top-[16%] left-[62%]">
+            <svg viewBox="0 0 100 120">
+                <path d="M50,0 C20,0 0,25 0,55 C0,80 30,100 40,110 L60,110 C70,100 100,80 100,55 C100,25 80,0 50,0 Z" fill="var(--primary-purple)"/>
+                <path d="M25,0 C15,20 20,60 40,110 L60,110 C80,60 85,20 75,0 Z" fill="var(--accent-yellow)"/>
+                <rect x="40" y="112" width="20" height="8" fill="#78350f"/>
+            </svg>
+        </div>
+        <div class="hidden lg:block absolute balloon-anim w-8 h-11 top-[10%] left-[14%]" style="animation-delay: 4s;">
+            <svg viewBox="0 0 100 120">
+                <path d="M50,0 C20,0 0,25 0,55 C0,80 30,100 40,110 L60,110 C70,100 100,80 100,55 C100,25 80,0 50,0 Z" fill="var(--primary-teal)"/>
+                <path d="M25,0 C15,20 20,60 40,110 L60,110 C80,60 85,20 75,0 Z" fill="var(--tree-color)"/>
+                <rect x="40" y="112" width="20" height="8" fill="#78350f"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="absolute w-full eco-layer-park transition-transform duration-300" data-speed="0.03">
+        <div class="w-full h-full bg-gradient-to-b from-[var(--park-light)] to-[var(--park-dark)] relative rounded-t-[50%] eco-hill-scale"></div>
+        <svg class="absolute bottom-0 w-full h-full" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 210">
+            <g opacity="0.55">
+                <polygon points="0,210 0,60 140,120 60,210" fill="var(--park-light)"/>
+                <polygon points="140,120 280,50 360,140 60,210 240,210" fill="var(--park-dark)"/>
+                <polygon points="360,140 480,70 620,150 240,210 480,210" fill="var(--park-light)"/>
+                <polygon points="620,150 760,60 880,130 480,210 740,210" fill="var(--park-dark)"/>
+                <polygon points="880,130 1020,55 1200,140 740,210 1020,210" fill="var(--park-light)"/>
+                <polygon points="1200,140 1200,210 1020,210" fill="var(--park-dark)"/>
+            </g>
+
+            <path class="river-flow" d="M0,182 Q300,192 600,178 T1200,188 L1200,210 L0,210 Z" fill="var(--river-color)"/>
+
+            <g class="hidden sm:block" transform="translate(500,131)">
+                <rect x="0" y="10" width="60" height="24" rx="3" fill="#8a5a34"/>
+                <circle cx="12" cy="8" r="7" fill="var(--tree-color)"/><circle cx="30" cy="6" r="8" fill="var(--tree-dark)"/><circle cx="48" cy="8" r="7" fill="var(--tree-color)"/>
+            </g>
+            <g class="hidden sm:block" transform="translate(575,132)">
+                <rect x="0" y="10" width="60" height="24" rx="3" fill="#8a5a34"/>
+                <circle cx="14" cy="7" r="6" fill="var(--accent-yellow)"/><circle cx="32" cy="6" r="7" fill="var(--primary-purple)"/><circle cx="48" cy="7" r="6" fill="var(--accent-yellow)"/>
+            </g>
+
+            <g transform="translate(120, 80)"><circle cx="20" cy="20" r="28" fill="var(--tree-color)"/><rect x="15" y="40" width="10" height="30" fill="#78350f"/></g>
+            <g transform="translate(215, 95) scale(0.8)"><circle cx="20" cy="20" r="28" fill="var(--tree-dark)"/><rect x="15" y="40" width="10" height="30" fill="#78350f"/></g>
+            <g transform="translate(300, 78)"><circle cx="20" cy="20" r="22" fill="var(--tree-color)"/><rect x="16" y="36" width="8" height="26" fill="#78350f"/></g>
+            <g class="hidden sm:block" transform="translate(370,100) scale(0.65)"><circle cx="20" cy="20" r="24" fill="var(--tree-dark)"/><rect x="15" y="38" width="10" height="26" fill="#78350f"/></g>
+            <g transform="translate(850, 72) scale(1.15)"><circle cx="20" cy="20" r="28" fill="var(--tree-color)"/><rect x="15" y="40" width="10" height="30" fill="#78350f"/></g>
+            <g transform="translate(950, 94)"><circle cx="20" cy="20" r="28" fill="var(--tree-dark)"/><rect x="15" y="40" width="10" height="30" fill="#78350f"/></g>
+            <g class="hidden sm:block" transform="translate(1040,88) scale(0.7)"><circle cx="20" cy="20" r="24" fill="var(--tree-color)"/><rect x="15" y="38" width="10" height="26" fill="#78350f"/></g>
+
+            <g class="hidden sm:block" fill="var(--tree-dark)" opacity="0.9">
+                <circle cx="60" cy="158" r="14"/><circle cx="78" cy="160" r="11"/>
+                <circle cx="1140" cy="158" r="14"/><circle cx="1120" cy="160" r="11"/>
+                <circle cx="440" cy="155" r="10"/><circle cx="710" cy="148" r="10"/>
+            </g>
+
+            <g class="hidden sm:block" fill="var(--accent-yellow)">
+                <circle cx="430" cy="160" r="4"/><circle cx="446" cy="162" r="4"/><circle cx="462" cy="159" r="4"/>
+            </g>
+            <g class="hidden sm:block" fill="var(--primary-purple)">
+                <circle cx="700" cy="158" r="4"/><circle cx="716" cy="156" r="4"/>
+            </g>
+
+            <g class="hidden sm:block" transform="translate(770,140)" fill="#78350f">
+                <rect x="0" y="10" width="50" height="5" rx="2"/>
+                <rect x="0" y="0" width="50" height="5" rx="2"/>
+                <rect x="2" y="5" width="4" height="16"/>
+                <rect x="44" y="5" width="4" height="16"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="absolute bottom-0 w-full eco-layer-street transition-transform duration-300" data-speed="0">
+        <div class="w-full h-full bg-[var(--road-color)] relative">
+            <div class="absolute top-0 w-full h-3 bg-emerald-600/30 border-b border-emerald-500/40"></div>
+            <div class="absolute top-1/2 w-full h-1 border-t-2 border-dashed" style="border-color: var(--road-line);"></div>
+            <div class="hidden md:flex absolute bottom-0 left-[42%] w-[10%] h-full gap-[6%] px-0">
+                <div class="w-[12%] h-full" style="background: var(--road-line); opacity:0.6;"></div>
+                <div class="w-[12%] h-full" style="background: var(--road-line); opacity:0.6;"></div>
+                <div class="w-[12%] h-full" style="background: var(--road-line); opacity:0.6;"></div>
+                <div class="w-[12%] h-full" style="background: var(--road-line); opacity:0.6;"></div>
+            </div>
+
+            <div class="hidden sm:block absolute bottom-0 left-[8%]">
+                <svg width="20" height="70" viewBox="0 0 20 70">
+                    <rect x="8" y="10" width="4" height="60" fill="var(--road-line)"/>
+                    <circle cx="10" cy="8" r="7" fill="var(--window-light)"/>
+                </svg>
+            </div>
+
+            <div class="hidden sm:block absolute bottom-[4px] right-[10%]">
+                <svg width="26" height="34" viewBox="0 0 26 34">
+                    <rect x="2" y="8" width="22" height="24" rx="3" fill="var(--tree-color)"/>
+                    <rect x="0" y="4" width="26" height="6" rx="2" fill="var(--tree-dark)"/>
+                    <path d="M13,14 l4,4 l-2,0 l0,3 l-4,0 l0,-3 l-2,0 Z" fill="var(--accent-yellow)" opacity="0.9"/>
+                </svg>
+            </div>
+
+            <div class="hidden md:block walker-anim absolute bottom-[2px] left-[20%]">
+                <svg width="14" height="34" viewBox="0 0 14 34">
+                    <circle cx="7" cy="5" r="4" fill="var(--text-secondary)"/>
+                    <path d="M7,10 L7,22 M7,14 L2,20 M7,14 L12,20 M7,22 L3,32 M7,22 L11,32" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" fill="none"/>
+                </svg>
+            </div>
+
+            <div class="bike-anim absolute bottom-[6px]">
+                <svg width="34" height="20" viewBox="0 0 34 20">
+                    <circle cx="7" cy="15" r="5" fill="none" stroke="var(--road-line)" stroke-width="2"/>
+                    <circle cx="27" cy="15" r="5" fill="none" stroke="var(--road-line)" stroke-width="2"/>
+                    <path d="M7,15 L15,6 L20,6 M15,6 L11,15 M20,6 L27,15 M20,6 L23,2" stroke="var(--primary-purple)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <div class="ev-car absolute top-[28%]">
+                <svg width="60" height="25" viewBox="0 0 60 25">
+                    <path d="M10,20 L10,10 Q10,0 25,0 L40,0 Q50,0 55,10 L60,10 L60,20 Z" fill="var(--primary-green)"/>
+                    <rect x="25" y="2" width="12" height="7" fill="var(--card-bg)" opacity="0.6"/>
+                    <circle cx="15" cy="20" r="4" fill="var(--road-color)"/><circle cx="50" cy="20" r="4" fill="var(--road-color)"/>
+                    <circle cx="50" cy="20" r="1.5" fill="var(--accent-yellow)"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div id="nature-particles" class="absolute inset-0 z-[5]" data-speed="0.06"></div>
+
+</div>
+
+    </div>
+
+    <div class="scroll-progress-container">
+        <div class="scroll-progress-bar" id="scrollBar"></div>
+    </div>
+
+    <nav class="backdrop-blur-md sticky top-0 z-50 transition-all duration-300 border-b border-white/10 shadow-sm" style="background-color: var(--nav-bg);" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="#page-dashboard" class="flex items-center space-x-3 group kk-logo-clickable" onclick="handleKotakuLogoClick(event)" title="Klik untuk kejutan hijau 🌱">
+                    <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg overflow-hidden group-hover:rotate-180 transition-transform duration-700 relative">
+                        <img src="logo.jpeg" alt="KotaKu" class="w-full h-full object-cover">
+                        <span class="kk-logo-spark" aria-hidden="true"></span>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight text-emerald-500">KotaKu</span>
+                </a>
+                
+               <div class="hidden md:flex items-center gap-1" id="navCarousel">
+    <button type="button" id="navCarouselPrev" class="nav-carousel-arrow" aria-label="Geser menu ke kiri" title="Geser menu ke kiri">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    <div class="nav-carousel-viewport">
+        <div class="nav-carousel-track" id="navCarouselTrack">
+            <a href="#page-dashboard" data-view="dashboard" class="nav-carousel-item text-slate-300 hover:text-emerald-500 font-medium transition-colors">Dashboard</a>
+            <a href="#page-edukasi" data-view="edukasi" class="nav-carousel-item text-slate-300 hover:text-emerald-500 font-medium transition-colors">Edukasi & Teori</a>
+            <a href="#page-aksi-warga" data-view="aksi-warga" class="nav-carousel-item text-slate-300 hover:text-emerald-500 font-medium transition-colors">Misi Warga</a>
+            <a href="#page-map" data-view="map" class="nav-carousel-item text-slate-300 hover:text-emerald-500 font-medium transition-colors">Peta Warga</a>
+            <a href="#page-scanner" data-view="scanner" class="nav-carousel-item relative text-slate-300 hover:text-emerald-500 font-medium transition-colors">
+                AR Scanner <span class="bg-amber-400 text-amber-900 text-[9px] px-1.5 py-0.5 rounded-full absolute -top-3 -right-6 font-bold animate-pulse shadow-sm"></span>
+            </a>
+            <a href="#page-calculator" data-view="calculator" class="nav-carousel-item text-slate-300 hover:text-emerald-500 font-medium transition-colors">Kalkulator</a>
+        </div>
+    </div>
+
+    <button type="button" id="navCarouselNext" class="nav-carousel-arrow" aria-label="Geser menu ke kanan" title="Geser menu ke kanan">
+        <i class="fa-solid fa-chevron-right"></i>
+    </button>
+</div>
+
+                <div class="flex items-center space-x-3 md:space-x-4">
+                    <button id="themeToggleBtn" class="w-10 h-10 flex items-center justify-center rounded-full ui-glass hover:text-emerald-500 transition-all text-lg shadow-md">
+                        <i class="fa-solid fa-moon" id="themeIcon"></i>
+                    </button>
+
+                    <button id="navLoginBtnDesktop" onclick="openLoginModal()" class="hidden sm:flex ui-glass hover:text-emerald-500 px-5 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md items-center gap-2 hover:scale-105">
+                        <i class="fa-solid fa-user"></i> Masuk
+                    </button>
+
+                    <button id="navProfileBtnDesktop" onclick="openProfileModal()" class="auth-hidden hidden sm:flex ui-glass hover:text-emerald-500 pl-1.5 pr-4 py-1.5 rounded-full font-semibold text-sm transition-all shadow-md items-center gap-2 hover:scale-105" aria-label="Buka profil saya">
+                        <span id="navProfileAvatar" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center text-white text-xs font-bold bg-gradient-to-br from-emerald-400 to-blue-500 flex-shrink-0">?</span>
+                        <span id="navProfileName" class="max-w-[110px] truncate">Profil</span>
+                    </button>
+
+                    <button onclick="handleQuickReportClick()" class="hidden sm:flex bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md btn-glow items-center gap-2 hover:scale-105">
+                        <i class="fa-solid fa-bullhorn"></i> Lapor Cepat
+                    </button>
+
+                    <button id="mobileMenuBtn" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full ui-glass hover:text-emerald-500 transition-all text-lg shadow-md" aria-label="Buka menu" aria-expanded="false" aria-controls="mobileMenu">
+                        <i class="fa-solid fa-bars" id="mobileMenuIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="mobileMenu" class="md:hidden hidden flex-col pb-4 border-t border-white/10 mt-1 pt-3">
+                <a href="#page-dashboard" class="mobile-nav-link block px-2 py-3 rounded-lg text-slate-300 hover:text-emerald-500 hover:bg-white/5 font-medium transition-colors">Dashboard</a>
+                <a href="#page-edukasi" class="mobile-nav-link block px-2 py-3 rounded-lg text-slate-300 hover:text-emerald-500 hover:bg-white/5 font-medium transition-colors">Edukasi & Teori</a>
+                <a href="#page-aksi-warga" class="mobile-nav-link block px-2 py-3 rounded-lg text-slate-300 hover:text-emerald-500 hover:bg-white/5 font-medium transition-colors">Misi &amp; Aksi Warga</a>
+                <a href="#page-map" class="mobile-nav-link block px-2 py-3 rounded-lg text-slate-300 hover:text-emerald-500 hover:bg-white/5 font-medium transition-colors">Peta Warga</a>
+                <a href="#page-scanner" class="mobile-nav-link block px-2 py-3 rounded-lg text-slate-300 hover:text-emerald-500 hover:bg-white/5 font-medium transition-colors">AR Scanner</a>
+                <a href="#page-calculator" class="mobile-nav-link block px-2 py-3 rounded-lg text-slate-300 hover:text-emerald-500 hover:bg-white/5 font-medium transition-colors">Kalkulator</a>
+                <button id="navLoginBtnMobile" onclick="openLoginModal()" class="mt-2 ui-glass px-5 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user"></i> Masuk
+                </button>
+                <button id="navProfileBtnMobile" onclick="openProfileModal()" class="auth-hidden hidden mt-2 ui-glass px-4 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md items-center justify-center gap-2.5">
+                    <span id="navProfileAvatarMobile" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center text-white text-xs font-bold bg-gradient-to-br from-emerald-400 to-blue-500 flex-shrink-0">?</span>
+                    <span id="navProfileNameMobile" class="truncate">Profil Saya</span>
+                </button>
+                <button onclick="handleQuickReportClick()" class="sm:hidden mt-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md btn-glow flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-bullhorn"></i> Lapor Cepat
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="w-full relative py-10 space-y-24 z-10">
+        
+        <section id="page-dashboard" data-view="dashboard" class="app-view active max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-section">
+            <div data-aos="fade-up" data-aos-duration="1000" class="ui-glass flex flex-col md:flex-row justify-between items-center p-8 lg:p-10 mb-10 relative overflow-hidden">
+                <div class="z-10 max-w-2xl">
+                    <h1 class="text-3xl md:text-5xl font-black mb-4 leading-tight text-glow-green">Halo, Warga Gresik <span class="wave-once">👋</span></h1>
+                    <p class="text-base md:text-lg mb-6 leading-relaxed text-adaptive-body">Mari wujudkan kota yang bersih dan berkelanjutan. Laporkan perbaikan, kelola sampahmu secara pintar, dalam satu platform.</p>
+                    <a href="#page-jelajah" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg btn-glow hover:-translate-y-0.5">
+                        Mulai Jelajah <i class="fa-solid fa-compass"></i>
+                    </a>
+                </div>
+
+                <div class="hero-logo-wrap kk-logo-clickable relative mt-10 md:mt-0 md:ml-8 shrink-0 z-10"
+                     id="kkHeroLogo" onclick="handleKotakuLogoClick(event)"
+                     role="button" tabindex="0" aria-label="Buka Pohon KotaKu, easter egg KotaKu"
+                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleKotakuLogoClick(event);}">
+                    <img src="logo-tengah.png" alt="KotaKu" class="hero-logo-svg">
+                </div>
+            </div>
+
+            <!-- Statistik Kota -->
+            <div data-aos="fade-up" class="ui-glass p-5">
+                <p class="text-xs font-bold uppercase tracking-wider text-adaptive-muted mb-4">Statistik Kota</p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <div class="text-xl font-black text-slate-800 dark:text-white">12</div>
+                        <div class="text-[11px] text-adaptive-muted">Laporan Aktif</div>
+                    </div>
+                    <div>
+                        <div class="text-xl font-black text-slate-800 dark:text-white">145 <span class="text-xs font-medium text-adaptive-muted">Kg</span></div>
+                        <div class="text-[11px] text-adaptive-muted">Sampah Terdaur</div>
+                    </div>
+                    <div>
+                        <div class="text-xl font-black text-slate-800 dark:text-white">210 <span class="text-xs font-medium text-adaptive-muted">Kg</span></div>
+                        <div class="text-[11px] text-adaptive-muted">CO₂ Diselamatkan</div>
+                    </div>
+                    <div>
+                        <div class="text-xl font-black text-slate-800 dark:text-white">540 <span class="text-xs font-medium text-adaptive-muted">kWh</span></div>
+                        <div class="text-[11px] text-adaptive-muted">Energi Dihemat</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kk-page-nav" data-page-nav="dashboard"></div>
+        </section>
+
+        <section id="page-jelajah" data-view="jelajah" class="app-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-section">
+            <div class="text-center mb-10" data-aos="fade-down">
+                <span class="bg-emerald-500/10 text-emerald-500 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-emerald-500/20 inline-block mb-3">
+                    <i class="fa-solid fa-compass mr-1"></i> Jelajahi KotaKu
+                </span>
+                <h2 class="text-3xl md:text-5xl font-black mb-4 text-glow-green">Mau Mulai dari Mana?</h2>
+                <p class="max-w-2xl mx-auto text-sm md:text-base text-adaptive-body leading-relaxed">
+                    Pilih salah satu fitur di bawah ini untuk mulai menjelajahi KotaKu.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6" data-aos="fade-up" data-aos-delay="100">
+                <button type="button" onclick="navigateTo('edukasi')" class="ui-glass p-6 flex flex-col items-center text-center gap-3 hover:-translate-y-1 hover:border-amber-500 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-book-open"></i></div>
+                    <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-white">Edukasi &amp; Teori</h3>
+                    <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Pelajari ekonomi sirkular &amp; smart city</p>
+                </button>
+
+                <button type="button" onclick="navigateTo('aksi-warga')" class="ui-glass p-6 flex flex-col items-center text-center gap-3 hover:-translate-y-1 hover:border-purple-500 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-500/15 text-purple-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-bullseye"></i></div>
+                    <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-white">Misi &amp; Aksi Warga</h3>
+                    <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Ikut tantangan hijau &amp; kumpulkan poin</p>
+                </button>
+
+                <button type="button" onclick="navigateTo('map')" class="ui-glass p-6 flex flex-col items-center text-center gap-3 hover:-translate-y-1 hover:border-emerald-500 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-map-location-dot"></i></div>
+                    <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-white">Peta Warga</h3>
+                    <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Lihat &amp; lapor titik masalah di sekitar kotamu</p>
+                </button>
+
+                <button type="button" onclick="navigateTo('scanner')" class="ui-glass p-6 flex flex-col items-center text-center gap-3 hover:-translate-y-1 hover:border-teal-500 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-teal-500/15 text-teal-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-white">AR Scanner</h3>
+                    <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Kenali jenis sampah lewat kamera</p>
+                </button>
+
+                <button type="button" onclick="navigateTo('calculator')" class="ui-glass p-6 flex flex-col items-center text-center gap-3 hover:-translate-y-1 hover:border-blue-500 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-500/15 text-blue-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-calculator"></i></div>
+                    <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-white">Kalkulator Dampak</h3>
+                    <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Hitung nilai &amp; dampak sampahmu</p>
+                </button>
+
+                <button type="button" onclick="handleQuickReportClick()" class="ui-glass p-6 flex flex-col items-center text-center gap-3 hover:-translate-y-1 hover:border-rose-500 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-bullhorn"></i></div>
+                    <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-white">Lapor Masalah</h3>
+                    <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Laporkan kerusakan atau tumpukan sampah</p>
+                </button>
+            </div>
+            <div class="kk-page-nav" data-page-nav="jelajah"></div>
+        </section>
+
+<section id="page-edukasi" data-view="edukasi" class="app-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-section">
+    
+    <div class="text-center mb-12" data-aos="fade-up">
+        <span class="bg-emerald-500/10 text-emerald-500 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-emerald-500/20 inline-block mb-3">
+            <i class="fa-solid fa-book-open mr-1"></i> Pusat Informasi & Edukasi
+        </span>
+        <h2 class="text-3xl md:text-5xl font-black mb-4 text-glow-green">Mengenal Platform KotaKu</h2>
+        <p class="max-w-2xl mx-auto text-sm md:text-base text-adaptive-body leading-relaxed">
+            Pahami landasan teori ekonomi sirkular, cara kerja fitur interaktif kami, serta literasi hijau untuk mendukung keberlanjutan kota cerdas.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12" data-aos="fade-up" data-aos-delay="100">
+        
+        <div class="ui-glass p-8 flex flex-col justify-between relative">
+            <div class="z-10 relative">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 shrink-0 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg border border-emerald-500/30">
+                        <i class="fa-solid fa-recycle"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white transition-colors">Kajian Teori: Ekonomi Sirkular</h3>
+                </div>
+                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-300 leading-relaxed mb-4">
+                    Berbeda dari sistem linier <em>(Buat &rarr; Pakai &rarr; Buang)</em>, Ekonomi Sirkular berfokus pada mempertahankan nilai produk, bahan, dan sumber daya selama mungkin dalam siklus ekonomi.
+                </p>
+            </div>
+            <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-2 border-t border-slate-200 dark:border-white/10 pt-4 z-10 relative">
+                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> Reduksi Limbah di Sumber Utama</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> Daur Ulang & Optimalisasi Energi</li>
+            </ul>
+        </div>
+
+        <div class="ui-glass p-8 flex flex-col justify-between relative">
+            <div class="z-10 relative">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 shrink-0 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg border border-blue-500/30">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white transition-colors">Smart City & Partisipasi Warga</h3>
+                </div>
+                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-300 leading-relaxed mb-4">
+                    Kota Cerdas memanfaatkan teknologi digital dan data real-time untuk meningkatkan efisiensi operasional layanan publik dan mempercepat respon terhadap masalah lingkungan lokal.
+                </p>
+            </div>
+            <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-2 border-t border-slate-200 dark:border-white/10 pt-4 z-10 relative">
+                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Pelaporan Geospasial Berbasis Lokasi</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-400"></i> Transparansi Perbaikan Infrastruktur</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16" data-aos="fade-up" data-aos-delay="200">
+        
+        <div class="ui-glass p-6 hover:border-emerald-500 transition-colors">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="text-emerald-500 text-2xl"><i class="fa-solid fa-map-location-dot"></i></div>
+                <h3 class="font-bold text-base text-slate-800 dark:text-white">Peta Warga</h3>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Fitur interaktif untuk memetakan titik kerusakan lingkungan, tumpukan limbah, serta jadwal perbaikan resmi.
+            </p>
+        </div>
+
+        <div class="ui-glass p-6 hover:border-teal-500 transition-colors">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="text-teal-500 text-2xl"><i class="fa-solid fa-expand"></i></div>
+                <h3 class="font-bold text-base text-slate-800 dark:text-white">AR Waste Scanner</h3>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Pemindaian kamera berbasis AI untuk mengenali jenis sampah, nilai ekonominya, dan petunjuk pemilahannya.
+            </p>
+        </div>
+
+        <div class="ui-glass p-6 hover:border-blue-500 transition-colors">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="text-blue-500 text-2xl"><i class="fa-solid fa-calculator"></i></div>
+                <h3 class="font-bold text-base text-slate-800 dark:text-white">Kalkulator Dampak</h3>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Konversi kuantitas sampah daur ulang menjadi estimasi Rupiah, penghematan energi (kWh), dan reduksi CO₂.
+            </p>
+        </div>
+    </div>
+
+    <div data-aos="fade-up" data-aos-delay="300">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-3 transition-colors">
+                <i class="fa-solid fa-newspaper text-emerald-500"></i> Artikel & Referensi
+            </h3>
+            <a href="#" class="text-sm font-bold text-emerald-600 hover:text-emerald-500 transition-colors flex items-center gap-1">
+                Lihat Semua <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div onclick="openArticle('zero-waste')" class="ui-glass rounded-2xl overflow-hidden group cursor-pointer hover:-translate-y-2 transition-all duration-300 flex flex-col">
+                <div class="h-48 overflow-hidden relative group-hover:scale-110 transition-transform duration-500">
+                    <img src="assets/img/zero-waste.jpeg" alt="Pengelolaan Limbah" class="w-full h-full object-cover">
+                    <div class="absolute top-3 left-3 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md uppercase tracking-wider backdrop-blur-sm">Manajemen Limbah</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h4 class="text-lg font-bold text-slate-800 dark:text-white mb-2 group-hover:text-emerald-500 transition-colors">Strategi Zero Waste di Lingkungan Rumah</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4 flex-grow">Panduan praktis memulai gaya hidup minim sampah dari rumah melalui metode pemilahan 3R yang efektif.</p>
+                    <span class="text-xs font-bold text-emerald-500 flex items-center gap-1">Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px] transition-transform group-hover:translate-x-1"></i></span>
+                </div>
+            </div>
+
+            <div onclick="openArticle('smart-city-iot')" class="ui-glass rounded-2xl overflow-hidden group cursor-pointer hover:-translate-y-2 transition-all duration-300 flex flex-col">
+                <div class="h-48 overflow-hidden relative group-hover:scale-110 transition-transform duration-500">
+                    <img src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=600&q=80" alt="Smart City" class="w-full h-full object-cover">
+                    <div class="absolute top-3 left-3 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md uppercase tracking-wider backdrop-blur-sm">Teknologi Kota</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h4 class="text-lg font-bold text-slate-800 dark:text-white mb-2 group-hover:text-blue-500 transition-colors">Implementasi IoT untuk Smart City</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4 flex-grow">Pelajari bagaimana sensor pintar dan data real-time mengubah cara kota mengelola fasilitas dan infrastruktur publik.</p>
+                    <span class="text-xs font-bold text-blue-500 flex items-center gap-1">Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px] transition-transform group-hover:translate-x-1"></i></span>
+                </div>
+            </div>
+
+            <div onclick="openArticle('energi-terbarukan')" class="ui-glass rounded-2xl overflow-hidden group cursor-pointer hover:-translate-y-2 transition-all duration-300 flex flex-col">
+                <div class="h-48 overflow-hidden relative group-hover:scale-110 transition-transform duration-500">
+                    <img src="assets/img/energi-terbarukan.jpeg" alt="Energi Hijau" class="w-full h-full object-cover">
+                    <div class="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md uppercase tracking-wider backdrop-blur-sm">Energi Hijau</div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h4 class="text-lg font-bold text-slate-800 dark:text-white mb-2 group-hover:text-amber-500 transition-colors">Transisi Menuju Energi Terbarukan</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4 flex-grow">Mengenal berbagai sumber energi ramah lingkungan yang dapat diterapkan pada level komunitas dan wilayah residensial.</p>
+                    <span class="text-xs font-bold text-amber-500 flex items-center gap-1">Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px] transition-transform group-hover:translate-x-1"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+            <div class="kk-page-nav" data-page-nav="edukasi"></div>
+</section>
+
+<section id="page-aksi-warga" data-view="aksi-warga" class="app-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-section">
+    <div class="text-center mb-10" data-aos="fade-down">
+        <span class="bg-emerald-500/10 text-emerald-500 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-emerald-500/20 inline-block mb-3">
+            <i class="fa-solid fa-hand-fist mr-1"></i> Aksi Warga
+        </span>
+        <h2 class="text-3xl md:text-5xl font-black mb-4 text-glow-green">Yuk, Ikut Bergerak</h2>
+        <p class="max-w-2xl mx-auto text-sm md:text-base text-adaptive-body leading-relaxed">
+            Pantau kondisi sekitarmu dan ikuti tantangan mingguan — dua langkah kecil yang langsung berdampak untuk kotamu.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+        <div data-aos="fade-up" data-aos-delay="100" class="ui-glass p-6 flex flex-col">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 shrink-0 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg shadow-inner">📍</div>
+                <h3 class="text-sm font-bold uppercase tracking-wider text-adaptive-muted">Ada Apa di Sekitarmu?</h3>
+            </div>
+            <ul id="nearbyList" class="space-y-2 mb-4 text-sm text-slate-600 dark:text-slate-300">
+                <li class="flex items-center justify-between animate-pulse text-slate-400">Mencari lokasimu...</li>
+            </ul>
+            <a href="#page-map" class="mt-auto inline-flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 px-4 py-2.5 rounded-xl font-bold text-sm transition">
+                Lihat Peta <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <!-- Tantangan Minggu Ini: 3 misi yang dilacak otomatis oleh situs sendiri -->
+        <div data-aos="fade-up" data-aos-delay="200" class="ui-glass p-6 flex flex-col">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 shrink-0 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg shadow-inner">🎯</div>
+                <h3 class="text-sm font-bold uppercase tracking-wider text-adaptive-muted">Tantangan Minggu Ini</h3>
+            </div>
+
+            <select id="challengeSelect" onchange="switchChallenge(this.value)" class="w-full mb-3 text-sm font-semibold rounded-lg border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 text-slate-700 dark:text-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                <option value="kalkulator">🧮 Coba Kalkulator Sampah</option>
+                <option value="artikel">📖 Baca 1 Artikel Edukasi</option>
+                <option value="jelajah">⏱️ Jelajahi Situs 5 Menit</option>
+            </select>
+
+            <p id="challengeDesc" class="text-sm text-adaptive-body mb-3">Masukkan minimal satu jenis sampah di Kalkulator untuk melihat estimasi nilai & dampaknya.</p>
+
+            <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-white/10 mb-1.5 overflow-hidden">
+                <div id="challengeBar" class="h-full bg-amber-400 rounded-full transition-all duration-500" style="width:0%"></div>
+            </div>
+            <p id="challengeProgressText" class="text-xs text-adaptive-muted mb-4">Belum dimulai — terdeteksi otomatis</p>
+
+            <a id="challengeBtn" href="#page-calculator" class="mt-auto inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-900 px-4 py-2.5 rounded-xl font-bold text-sm transition">
+                Buka Kalkulator <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+    </div>
+            <div class="kk-page-nav" data-page-nav="aksi-warga"></div>
+</section>
+        <section id="page-map" data-view="map" class="app-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-section">
+            <div class="text-center mb-10" data-aos="fade-down">
+                <h2 class="text-2xl md:text-4xl font-black mb-2 text-glow-green">Pantauan Laporan Warga</h2>
+                <p class="max-w-xl mx-auto text-sm md:text-base text-adaptive-body">Platform interaktif untuk memetakan dan melaporkan kerusakan infrastruktur serta masalah lingkungan.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 ui-glass p-6 flex flex-col justify-between" data-aos="fade-right">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold flex items-center gap-2 text-slate-800">
+                            <span class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-map-location-dot"></i></span>
+                            Peta Laporan Warga
+                        </h3>
+                        <div class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded-md font-bold uppercase tracking-wider shadow-sm border border-slate-200">Pilih Mode di Kanan Atas</div>
+                    </div>
+                    <div class="flex-grow bg-slate-900 rounded-xl relative overflow-hidden min-h-[400px] shadow-inner z-0" id="map-container">
+                        <div id="interactive-map" class="absolute inset-0 w-full h-full z-0"></div>
+                        
+                        <button id="btnTriggerReport" onclick="openReportModal()" class="hidden z-20 absolute bottom-6 left-1/2 -translate-x-1/2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-full font-bold shadow-lg transition-all btn-glow gap-2 items-center">
+                            <i class="fa-solid fa-camera"></i> Lapor di Titik Ini
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ui-glass p-6 flex flex-col h-full" data-aos="fade-left">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-800">
+                        <span class="w-9 h-9 rounded-lg bg-red-100 text-red-600 flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                        Detail Laporan
+                    </h3>
+                    
+                    <div id="report-empty-state" class="flex flex-col items-center justify-center flex-grow text-center opacity-60 bg-white/50 rounded-xl p-4 border border-dashed border-slate-300">
+                        <i class="fa-solid fa-hand-pointer text-4xl mb-3 text-slate-400"></i>
+                        <p class="text-sm text-slate-600 font-medium">Klik salah satu penanda (marker) di peta untuk melihat foto dan detail kerusakan wilayah.</p>
+                    </div>
+
+                    <div id="report-detail-data" class="hidden flex-col h-full">
+                        <div class="w-full h-40 bg-slate-200 rounded-xl mb-4 overflow-hidden shadow-inner relative">
+                            <img id="panel-rep-img" src="" alt="Foto Laporan" class="w-full h-full object-cover">
+                            <span id="panel-rep-status" class="absolute top-2 right-2 bg-amber-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider shadow-md">Menunggu</span>
+                        </div>
+                        
+                        <h3 id="panel-rep-title" class="text-xl font-black text-slate-800 mb-1 leading-tight">Judul Laporan</h3>
+                        <p class="text-xs text-slate-500 mb-3 flex items-center gap-1.5"><i class="fa-regular fa-calendar text-emerald-500"></i> <span id="panel-rep-date">Tanggal</span></p>
+                        
+                        <div class="pt-4 border-t border-slate-200 mb-4 flex-grow">
+                            <p id="panel-rep-desc" class="text-sm text-slate-600 leading-relaxed">Deskripsi masalah akan muncul di sini.</p>
+                        </div>
+                        
+                        <p class="text-[10px] text-slate-500 font-mono mt-auto mb-3" id="panel-rep-coords"><i class="fa-solid fa-location-dot"></i> Koordinat: -</p>
+
+                        <button id="panel-rep-delete-btn" onclick="handleDeleteReport()" class="hidden w-full flex items-center justify-center gap-2 text-xs font-bold text-red-500 hover:text-white border border-red-200 hover:border-red-500 hover:bg-red-500 rounded-lg py-2 transition-colors">
+                            <i class="fa-solid fa-trash-can"></i> Hapus Laporan Ini
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16" data-aos="fade-up">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl md:text-3xl font-black mb-2 text-glow-green flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-calendar-check text-emerald-500"></i> Jadwal Perbaikan 
+                    </h2>
+                    <p class="max-w-xl mx-auto text-sm md:text-base text-adaptive-body">Pantau jadwal perbaikan infrastruktur dari titik-titik yang telah dilaporkan warga di peta.</p>
+                </div>
+
+                <div class="ui-glass p-6 md:p-8 max-w-4xl mx-auto relative overflow-hidden flex flex-col md:flex-row gap-8">
+                    <div class="flex-1 w-full">
+                        <div class="flex justify-between items-center mb-6">
+                            <button id="prevMonth" class="w-10 h-10 flex items-center justify-center rounded-full ui-glass hover:text-emerald-500 transition-all text-sm shadow-md">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h3 id="currentMonthYear" class="text-xl font-bold text-slate-800 transition-colors">Bulan Tahun</h3>
+                            <button id="nextMonth" class="w-10 h-10 flex items-center justify-center rounded-full ui-glass hover:text-emerald-500 transition-all text-sm shadow-md">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-7 gap-2 text-center mb-2 font-bold text-xs uppercase tracking-wider text-adaptive-muted">
+                            <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
+                        </div>
+                        
+                        <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-center"></div>
+                    </div>
+
+                    <div class="md:w-1/3 bg-slate-900/90 md:rounded-none rounded-2xl p-6 md:border-l md:border-t-0 border border-white/10 flex flex-col items-center justify-center relative transition-all" id="repairDetailPanel">
+                        <div id="emptyState" class="text-center">
+                            <i class="fa-solid fa-hand-pointer text-4xl mb-4 text-emerald-500/50"></i>
+                            <p class="text-sm text-slate-300">Klik pada tanggal dengan indikator hijau untuk melihat detail perbaikan.</p>
+                        </div>
+                        
+                        <div id="activeState" class="hidden flex-col w-full text-left justify-center">
+                            <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block w-max mb-4" id="detailDateBadge">
+                                25 Agustus 2026
+                            </span>
+                            <h3 class="text-xl font-black mb-2 text-glow-green" id="detailTitle">Perbaikan Aspal</h3>
+                            <p class="text-xs mb-4 text-slate-400"><i class="fa-solid fa-location-dot text-emerald-500 mr-1.5"></i> <span id="detailLocation">Jl. Merdeka Blok B</span></p>
+                            
+                            <div class="mt-auto bg-black/20 p-4 rounded-xl border border-white/5">
+                                <span class="text-[10px] block font-bold uppercase text-slate-400 mb-1">Status Progres</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 w-3/4 rounded-full" id="detailProgress"></div>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-300" id="detailPercentage">75%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kk-page-nav" data-page-nav="map"></div>
+        </section>
+
+        <section id="page-scanner" data-view="scanner" class="app-view max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 scroll-section">
+            <div class="text-center mb-10" data-aos="zoom-in-up">
+                <h2 class="text-2xl md:text-4xl font-black mb-2 text-glow-green"> AR Waste Scanner</h2>
+                <p class="max-w-xl mx-auto text-sm md:text-base text-adaptive-body">Nyalakan kamera Anda untuk mendeteksi dan mengklasifikasikan jenis material sampah secara real-time — botol plastik, kaleng, kertas/buku, kardus, kaca, hingga elektronik (hp, dll).</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="ui-glass p-4 flex flex-col items-center" data-aos="slide-right">
+                    <div class="w-full h-[320px] bg-black rounded-xl relative overflow-hidden flex items-center justify-center group">
+                        <video id="cameraFeed" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+                        
+                        <div id="cameraOffState" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 z-10 bg-slate-900/90">
+                            <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-4 shadow-inner">
+                                <i class="fa-solid fa-camera-slash text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold text-sm">Kamera Nonaktif</h3>
+                            <p class="text-xs opacity-70 mt-1">Berikan izin browser untuk mengakses kamera.</p>
+                        </div>
+
+                        <div id="arOverlay" class="absolute inset-0 hidden pointer-events-none z-20">
+                            <div class="absolute top-4 left-4 w-8 h-8 border-t-4 border-l-4 border-emerald-500 rounded-tl-lg ar-bracket"></div>
+                            <div class="absolute top-4 right-4 w-8 h-8 border-t-4 border-r-4 border-emerald-500 rounded-tr-lg ar-bracket"></div>
+                            <div class="absolute bottom-4 left-4 w-8 h-8 border-b-4 border-l-4 border-emerald-500 rounded-bl-lg ar-bracket"></div>
+                            <div class="absolute bottom-4 right-4 w-8 h-8 border-b-4 border-r-4 border-emerald-500 rounded-br-lg ar-bracket"></div>
+                            
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-500/40">
+                                <i class="fa-solid fa-crosshairs text-4xl"></i>
+                            </div>
+                            
+                            <div class="absolute w-full h-[2px] bg-emerald-400 shadow-[0_0_15px_3px_rgba(16,185,129,0.8)] hidden z-30" id="realScanLine"></div>
+                        </div>
+
+                        <!-- AI Vision HUD (mobile/tablet — di atas <lg saja, lihat .dbg-hidden di CSS).
+                             Menampilkan live label + confidence mentah dari MobileNet supaya
+                             prosesnya terasa transparan, bukan cuma kotak hitam. -->
+                        <div id="aiDebugOverlay" class="dbg-hidden lg:hidden absolute top-3 left-3 right-3 z-30 pointer-events-none bg-slate-950/85 backdrop-blur-md border border-emerald-500/25 rounded-lg px-2.5 py-2 font-mono shadow-[0_0_18px_rgba(16,185,129,0.15)]">
+                            <div class="flex items-center gap-1.5 mb-1.5 text-emerald-400 text-[8px] font-bold uppercase tracking-widest">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.9)]"></span>
+                                AI Vision Live
+                            </div>
+                            <div id="aiDebugOverlayRows" class="space-y-1"></div>
+                        </div>
+
+                        <div id="cameraStatus" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur text-white px-4 py-1.5 rounded-full text-[10px] font-bold transition-all z-30 border border-white/10 uppercase tracking-widest whitespace-nowrap">
+                            Menunggu Akses
+                        </div>
+                    </div>
+
+                    <div class="mt-4 w-full grid grid-cols-2 gap-3">
+                        <button id="btnToggleCamera" onclick="toggleCamera()" class="py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold text-xs md:text-sm transition-colors shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-video"></i> Buka Kamera
+                        </button>
+                        <button id="btnRealScan" onclick="startARScan()" disabled class="py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-bold text-xs md:text-sm btn-glow flex items-center justify-center gap-2 opacity-50 cursor-not-allowed transition-all">
+                            <i class="fa-solid fa-expand"></i> Pindai Objek
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ui-glass p-6 md:p-8 flex flex-col justify-center relative overflow-hidden" data-aos="slide-left">
+                    <div id="scanResultPlaceholder" class="text-center py-10 flex flex-col items-center text-slate-400 transition-all duration-300 w-full">
+                        <i class="fa-solid fa-cube text-4xl mb-4 opacity-30 block animate-pulse"></i>
+                        <h3 class="font-bold text-sm mb-1 text-adaptive-body" id="scanTextPlaceholder">Sistem AI Siaga</h3>
+                        <p class="text-xs max-w-xs mx-auto text-adaptive-muted">Arahkan kamera ke sampah dan tekan tombol pindai.</p>
+
+                        <div id="aiDebugOverlayDesktop" class="dbg-hidden hidden lg:block mt-6 w-full text-left bg-slate-950/95 border border-emerald-500/20 rounded-xl p-4 font-mono shadow-inner">
+                            <div class="flex items-center gap-2 mb-3 text-emerald-400 text-[10px] font-bold uppercase tracking-widest">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                                AI Vision — Analisis Live
+                            </div>
+                            <div id="aiDebugOverlayDesktopRows" class="space-y-2.5"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="scanResultData" class="hidden flex-col h-full justify-center">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span id="aiAccuracyMatch" class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1 w-max border border-emerald-200">
+                                <i class="fa-solid fa-microchip"></i> AI Match: 98.5%
+                            </span>
+                            <span class="bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-blue-200">
+                                Terverifikasi
+                            </span>
+                        </div>
+                        
+                        <h3 class="text-3xl font-black mb-2 text-glow-green" id="resMaterialType">Botol Plastik PET</h3>
+                        <p class="text-xs mb-6 pb-4 border-b border-white/10 text-adaptive-body" id="resMaterialDesc">Polimer termoplastik mudah didaur ulang kembali.</p>
+                        
+                        <div class="grid grid-cols-2 divide-x divide-white/10 gap-4 mb-6 bg-slate-900/90 rounded-xl p-4">
+                            <dl class="pl-1">
+                                <dt class="text-[10px] font-bold uppercase text-slate-400 mb-1"><i class="fa-solid fa-weight-scale mr-1"></i> Estimasi Berat</dt>
+                                <dd class="font-black text-lg text-white" id="resMaterialWeight">0.02 Kg</dd>
+                            </dl>
+                            <dl class="pl-4">
+                                <dt class="text-[10px] font-bold uppercase text-slate-400 mb-1"><i class="fa-solid fa-tags mr-1"></i> Nilai Ekonomi</dt>
+                                <dd class="font-black text-emerald-400 text-lg" id="resMaterialPrice">Rp 2.500 / Kg</dd>
+                            </dl>
+                        </div>
+                        
+                        <button onclick="addToCalculator()" class="mt-auto w-full bg-emerald-500 hover:bg-emerald-400 text-white py-3.5 rounded-xl font-bold text-sm transition-transform active:scale-95 shadow-[0_5px_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-calculator"></i> Input ke Kalkulator
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="kk-page-nav" data-page-nav="scanner"></div>
+        </section>
+
+        <section id="page-calculator" data-view="calculator" class="app-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-section">
+            <div class="text-center mb-10" data-aos="fade-up">
+                <h2 class="text-2xl md:text-4xl font-black mb-2 text-glow-green">Kalkulator Ekonomi Sirkular</h2>
+                <p class="max-w-xl mx-auto text-sm md:text-base text-adaptive-body">Ubah kuantitas sampah rumahan Anda menjadi konversi rupiah dan reduksi emisi karbon.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div id="calc-card-plastic" class="ui-glass p-5 transition-all duration-300">
+                    <h3 class="font-bold text-sm mb-3 flex items-center gap-2 text-slate-800">
+                        <i class="fa-solid fa-bottle-water text-blue-500"></i> Botol Plastik (Pcs)
+                    </h3>
+                    <input type="range" id="plasticSlider" min="0" max="500" value="0" oninput="syncInput('plastic')">
+                    <input type="number" id="plasticInput" min="0" value="0" oninput="syncInput('plastic', true)" class="w-full mt-3 p-2 rounded-lg text-center font-bold text-lg border-0 outline-none shadow-inner">
+                </div>
+                <div id="calc-card-can" class="ui-glass p-5 transition-all duration-300">
+                    <h3 class="font-bold text-sm mb-3 flex items-center gap-2 text-slate-800">
+                        <i class="fa-solid fa-capsules text-slate-400"></i> Kaleng Bekas (Pcs)
+                    </h3>
+                    <input type="range" id="canSlider" min="0" max="500" value="0" oninput="syncInput('can')">
+                    <input type="number" id="canInput" min="0" value="0" oninput="syncInput('can', true)" class="w-full mt-3 p-2 rounded-lg text-center font-bold text-lg border-0 outline-none shadow-inner">
+                </div>
+                <div id="calc-card-cardboard" class="ui-glass p-5 transition-all duration-300">
+                    <h3 class="font-bold text-sm mb-3 flex items-center gap-2 text-slate-800">
+                        <i class="fa-solid fa-box-open text-amber-500"></i> Kardus Bekas (Kg)
+                    </h3>
+                    <input type="range" id="cardboardSlider" min="0" max="100" value="0" step="0.5" oninput="syncInput('cardboard')">
+                    <input type="number" id="cardboardInput" min="0" value="0" step="0.5" oninput="syncInput('cardboard', true)" class="w-full mt-3 p-2 rounded-lg text-center font-bold text-lg border-0 outline-none shadow-inner">
+                </div>
+
+                <div id="calc-card-paper" class="ui-glass p-5 transition-all duration-300">
+                    <h3 class="font-bold text-sm mb-3 flex items-center gap-2 text-slate-800">
+                        <i class="fa-solid fa-newspaper text-amber-600"></i> Kertas / Buku Bekas (Kg)
+                    </h3>
+                    <input type="range" id="paperSlider" min="0" max="100" value="0" step="0.5" oninput="syncInput('paper')">
+                    <input type="number" id="paperInput" min="0" value="0" step="0.5" oninput="syncInput('paper', true)" class="w-full mt-3 p-2 rounded-lg text-center font-bold text-lg border-0 outline-none shadow-inner">
+                </div>
+                <div id="calc-card-glass" class="ui-glass p-5 transition-all duration-300">
+                    <h3 class="font-bold text-sm mb-3 flex items-center gap-2 text-slate-800">
+                        <i class="fa-solid fa-wine-bottle text-teal-500"></i> Pecahan Kaca / Botol (Pcs)
+                    </h3>
+                    <input type="range" id="glassSlider" min="0" max="500" value="0" oninput="syncInput('glass')">
+                    <input type="number" id="glassInput" min="0" value="0" oninput="syncInput('glass', true)" class="w-full mt-3 p-2 rounded-lg text-center font-bold text-lg border-0 outline-none shadow-inner">
+                </div>
+                <div id="calc-card-electronic" class="ui-glass p-5 transition-all duration-300">
+                    <h3 class="font-bold text-sm mb-3 flex items-center gap-2 text-slate-800">
+                        <i class="fa-solid fa-mobile-screen-button text-purple-500"></i> E-waste / Elektronik (Kg)
+                    </h3>
+                    <input type="range" id="electronicSlider" min="0" max="50" value="0" step="0.5" oninput="syncInput('electronic')">
+                    <input type="number" id="electronicInput" min="0" value="0" step="0.5" oninput="syncInput('electronic', true)" class="w-full mt-3 p-2 rounded-lg text-center font-bold text-lg border-0 outline-none shadow-inner">
+                    <p class="text-[10px] mt-2 text-amber-500 font-semibold"><i class="fa-solid fa-triangle-exclamation"></i> Nilai hanya estimasi kasar — setorkan ke drop-box e-waste resmi, bukan bank sampah biasa.</p>
+                </div>
+
+                <button onclick="calculateWaste()" class="bg-emerald-600/90 hover:bg-emerald-500/90 text-white font-bold p-5 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-md btn-glow transition-all sm:col-span-2 lg:col-span-3">
+                    <i class="fa-solid fa-wand-magic-sparkles text-2xl mb-1"></i>
+                    <span>Hitung Total Dampak</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" data-aos="fade-up">
+                <dl class="bg-white p-5 rounded-xl text-center shadow-md border border-slate-100">
+                    <dt class="text-[10px] font-bold uppercase tracking-wider text-adaptive-muted">Total Berat</dt>
+                    <dd class="text-xl md:text-2xl font-black mt-1 text-slate-800" id="resWeight">0 kg</dd>
+                </dl>
+                <dl class="bg-white p-5 rounded-xl text-center shadow-md border border-slate-100">
+                    <dt class="text-[10px] font-bold uppercase tracking-wider text-adaptive-muted">Nilai Jual</dt>
+                    <dd class="text-xl md:text-2xl font-black text-emerald-500 mt-1" id="resMoney">Rp 0</dd>
+                </dl>
+                <dl class="bg-white p-5 rounded-xl text-center shadow-md border border-slate-100">
+                    <dt class="text-[10px] font-bold uppercase tracking-wider text-adaptive-muted">Reduksi CO₂</dt>
+                    <dd class="text-xl md:text-2xl font-black mt-1 text-slate-800" id="resCO2">0 kg</dd>
+                </dl>
+                <dl class="bg-white p-5 rounded-xl text-center shadow-md border border-slate-100">
+                    <dt class="text-[10px] font-bold uppercase tracking-wider text-adaptive-muted">Energi Dihemat</dt>
+                    <dd class="text-xl md:text-2xl font-black mt-1 text-slate-800" id="resEnergy">0 kWh</dd>
+                </dl>
+            </div>
+            
+            <div class="flex justify-center mt-10">
+                <div id="badgeDisplay" class="px-8 py-4 rounded-full font-black text-xl flex items-center gap-4 bg-slate-200 border border-slate-300 text-slate-500 opacity-50 transition-all duration-700 shadow-sm">
+                    <i class="fa-solid fa-pen-to-square text-3xl"></i> <span id="badgeText">Masukkan Data!</span>
+                </div>
+            </div>
+            <div class="kk-page-nav" data-page-nav="calculator"></div>
+        </section>
+
+    </main>
+
+    <footer class="pt-16 pb-8 relative z-10 transition-colors duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+                <div class="md:col-span-2">
+                    <h3 class="text-2xl font-black mb-3 flex items-center justify-center md:justify-start gap-2 text-adaptive-body">
+                        <span class="kk-logo-clickable inline-flex w-7 h-7 rounded-full bg-white shadow overflow-hidden shrink-0" onclick="handleKotakuLogoClick(event)" role="button" tabindex="0" aria-label="Buka Pohon KotaKu" title="Klik untuk kejutan hijau 🌱">
+                            <img src="logo.jpeg" alt="KotaKu" class="w-full h-full object-cover">
+                        </span> KotaKu
+                    </h3>
+                    <p class="text-sm text-adaptive-muted max-w-sm leading-relaxed mx-auto md:mx-0">Solusi digital terintegrasi untuk mewujudkan komunitas cerdas yang berkelanjutan dan ramah lingkungan.</p>
+                </div>
+            </div>
+            <div class="text-center text-sm border-t border-slate-200 dark:border-white/10 pt-6 text-adaptive-muted">
+                <p>&copy; 2026 KotaKu Web Solution. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="reportModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white max-w-md w-full mx-4 rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative p-6">
+            <button onclick="closeReportModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-red-100 hover:text-red-500 transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <h3 class="text-xl font-black text-slate-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-camera-retro text-emerald-500"></i> Kirim Laporan Warga
+            </h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Judul Masalah</label>
+                    <input type="text" id="input-rep-title" class="w-full px-4 py-2 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:border-emerald-500 text-sm text-slate-800" placeholder="Contoh: Pipa Bocor, Tumpukan Sampah">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Unggah Foto</label>
+                    <input type="file" id="input-rep-img" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer border border-slate-200 rounded-lg bg-slate-50">
+                    
+                    <div id="preview-container" class="hidden mt-2 w-full h-32 rounded-lg overflow-hidden border border-slate-200 relative">
+                        <img id="img-preview" src="" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Deskripsi Tambahan</label>
+                    <textarea id="input-rep-desc" rows="3" class="w-full px-4 py-2 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:border-emerald-500 text-sm text-slate-800" placeholder="Jelaskan detail kerusakannya..."></textarea>
+                </div>
+                
+                <p class="text-[10px] font-mono text-slate-500 bg-slate-50 p-2 rounded border border-slate-100" id="modal-coords">Koordinat terlampir otomatis.</p>
+                
+                <button onclick="submitReport()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition shadow-md">
+                    Kirim Laporan ke Sistem
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="articleModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-white max-w-2xl w-full mx-auto rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[85vh] flex flex-col">
+            <button onclick="closeArticle()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-red-100 hover:text-red-500 transition-colors z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="article-img-wrap" class="h-56 overflow-hidden relative flex-shrink-0">
+                <img id="article-img" src="" alt="" class="w-full h-full object-cover">
+                <div id="article-tag" class="absolute top-3 left-3 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md uppercase tracking-wider backdrop-blur-sm"></div>
+            </div>
+
+            <div class="p-6 md:p-8 overflow-y-auto">
+                <h3 id="article-title" class="text-xl md:text-2xl font-black text-slate-800 mb-4"></h3>
+                <div id="article-body" class="text-sm text-slate-600 leading-relaxed space-y-3"></div>
+
+                <div class="mt-6 pt-5 border-t border-slate-200">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-adaptive-muted mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-link"></i> Referensi
+                    </h4>
+                    <ul id="article-refs" class="space-y-1.5 text-xs"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[9999] hidden items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+        <div class="max-w-3xl w-full mx-auto rounded-3xl shadow-2xl transform scale-95 transition-transform duration-300 relative">
+            <button onclick="closeLoginModal()" title="Lewati, masuk sebagai tamu" aria-label="Tutup, masuk sebagai tamu" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-red-500/30 hover:text-red-200 transition-colors z-20">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="pl-scene">
+                <svg width="0" height="0" style="position:absolute;">
+                    <defs>
+                        <linearGradient id="plLeafGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:var(--primary-green)"/>
+                            <stop offset="100%" style="stop-color:var(--tree-color)"/>
+                        </linearGradient>
+                        <symbol id="plLeafShape" viewBox="0 0 40 60">
+                            <path d="M20,0 C33,13 35,34 26,48 C23,53 20,60 20,60 C20,60 17,53 14,48 C5,34 7,13 20,0 Z"
+                                  fill="url(#plLeafGrad)" stroke="var(--tree-dark)" stroke-width="1.4"/>
+                            <path d="M20,6 L20,54" stroke="var(--tree-dark)" stroke-width="1.3" stroke-linecap="round" opacity="0.55"/>
+                            <path d="M20,14 L11,21 M20,14 L29,21 M20,24 L9,32 M20,24 L31,32 M20,35 L12,43 M20,35 L28,43"
+                                  stroke="var(--tree-dark)" stroke-width="1" stroke-linecap="round" opacity="0.4" fill="none"/>
+                        </symbol>
+                    </defs>
+                </svg>
+
+                <div class="pl-stage">
+                    <div class="pl-pot-wrap" id="plPotWrap" onclick="plTogglePlant()" role="button" tabindex="0" aria-label="Sentuh pot untuk menumbuhkan tanaman dan membuka form masuk" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();plTogglePlant();}">
+                        <div class="pl-glow"></div>
+
+                        <div class="pl-plant">
+                            <div class="pl-stem">
+                                <div class="pl-leaf"       style="bottom:calc(32px * var(--pl-mult));  --rot:-32deg; --delay:.28s;"><svg><use href="#plLeafShape"/></svg></div>
+                                <div class="pl-leaf"       style="bottom:calc(64px * var(--pl-mult));  --rot:26deg;  --delay:.42s;"><svg><use href="#plLeafShape"/></svg></div>
+                                <div class="pl-leaf"       style="bottom:calc(100px * var(--pl-mult)); --rot:-24deg; --delay:.56s;"><svg><use href="#plLeafShape"/></svg></div>
+                                <div class="pl-leaf"       style="bottom:calc(132px * var(--pl-mult)); --rot:28deg;  --delay:.70s;"><svg><use href="#plLeafShape"/></svg></div>
+                                <div class="pl-leaf small" style="bottom:calc(158px * var(--pl-mult)); --rot:-36deg; --delay:.84s;"><svg><use href="#plLeafShape"/></svg></div>
+                                <div class="pl-leaf small" style="bottom:calc(176px * var(--pl-mult)); --rot:32deg;  --delay:.92s;"><svg><use href="#plLeafShape"/></svg></div>
+
+                                <div class="pl-flower">
+                                    <div class="pl-petal" style="--prot:0deg;"></div>
+                                    <div class="pl-petal" style="--prot:72deg;"></div>
+                                    <div class="pl-petal" style="--prot:144deg;"></div>
+                                    <div class="pl-petal" style="--prot:216deg;"></div>
+                                    <div class="pl-petal" style="--prot:288deg;"></div>
+                                    <div class="pl-flower-center"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pl-pot">
+                            <svg viewBox="0 0 180 130" xmlns="http://www.w3.org/2000/svg">
+                                <ellipse cx="90" cy="18" rx="86" ry="16" fill="var(--pl-soil-light)"/>
+                                <ellipse cx="90" cy="14" rx="78" ry="12" fill="var(--pl-soil-dark)"/>
+                                <path d="M14,20 L34,124 Q90,140 146,124 L166,20 Z" fill="var(--pl-pot-body)"/>
+                                <path d="M14,20 L34,124 Q60,132 90,133 L90,20 Z" fill="var(--pl-pot-shadow)" opacity="0.35"/>
+                                <ellipse cx="90" cy="20" rx="76" ry="14" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="3"/>
+                            </svg>
+                        </div>
+                        <div class="pl-press-hint">Sentuh Pot</div>
+                    </div>
+
+                    <div class="pl-card" id="plLoginCard">
+                        <h2><span class="pl-leaf-ico">🌿</span> Selamat Datang</h2>
+                        <p class="pl-sub" id="plCardSub">Masuk untuk melanjutkan ke KotaKu</p>
+
+                        <form id="plAuthForm" onsubmit="return plHandleSubmit(event)">
+                            <div class="pl-field">
+                                <label for="plUsername">Username</label>
+                                <input type="text" id="plUsername" placeholder="nama pengguna" autocomplete="username" required>
+                            </div>
+
+                            <div class="pl-field-extra" id="plEmailField">
+                                <div class="pl-field">
+                                    <label for="plEmail">Email</label>
+                                    <input type="email" id="plEmail" placeholder="nama@email.com" autocomplete="email">
+                                </div>
+                            </div>
+
+                            <div class="pl-field">
+                                <label for="plPassword">Password</label>
+                                <input type="password" id="plPassword" placeholder="••••••••" autocomplete="current-password" required>
+                            </div>
+
+                            <button type="submit" class="pl-submit-btn" id="plSubmitBtn">Masuk</button>
+                            <div class="pl-msg" id="plFormMsg"></div>
+                        </form>
+
+                        <div class="pl-switch-mode">
+                            <span id="plSwitchText">Belum punya akun?</span>
+                            <a href="#" onclick="plSwitchMode(event)" id="plSwitchLink" role="button" tabindex="0">Daftar sekarang</a>
+                        </div>
+
+                        <div class="pl-skip">
+                            <a href="#" onclick="closeLoginModal(); return false;" role="button" tabindex="0">Lewati, jelajahi dulu sebagai tamu →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pl-hint">Klik pot untuk menumbuhkan tanaman &amp; membuka form masuk</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profileModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[9999] hidden items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+        <div class="max-w-md w-full mx-auto rounded-3xl shadow-2xl transform scale-95 transition-transform duration-300 relative">
+            <button onclick="closeProfileModal()" title="Tutup" aria-label="Tutup profil" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-red-500/30 hover:text-red-200 transition-colors z-20">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="pf-card">
+                <div class="pf-header">
+                    <div class="pf-avatar-wrap">
+                        <div class="pf-avatar-leaf-ring">
+                            <img id="pfAvatarImg" class="pf-avatar-img hidden" alt="Foto profil">
+                            <span id="pfAvatarInitial" class="pf-avatar-initial">?</span>
+                        </div>
+                        <button type="button" class="pf-avatar-edit-btn" onclick="document.getElementById('pfAvatarFile').click()" title="Ganti foto profil" aria-label="Ganti foto profil">
+                            <i class="fa-solid fa-camera"></i>
+                        </button>
+                        <input type="file" id="pfAvatarFile" accept="image/png,image/jpeg,image/webp" class="hidden" onchange="pfHandleAvatarFile(event)">
+                    </div>
+                    <h2><span class="pf-leaf-ico">🌿</span> Profil Saya</h2>
+                    <p class="pf-sub" id="pfMemberSince">Warga KotaKu</p>
+                </div>
+
+                <div class="pf-preset-row" id="pfPresetRow" aria-label="Pilih avatar bertema daun">
+                    <button type="button" class="pf-preset-swatch" data-preset="avatar-preset:leaf-1" onclick="pfSelectPreset('avatar-preset:leaf-1')" title="Daun Sage">🍃</button>
+                    <button type="button" class="pf-preset-swatch" data-preset="avatar-preset:leaf-2" onclick="pfSelectPreset('avatar-preset:leaf-2')" title="Daun Mint">🌱</button>
+                    <button type="button" class="pf-preset-swatch" data-preset="avatar-preset:leaf-3" onclick="pfSelectPreset('avatar-preset:leaf-3')" title="Pohon">🌳</button>
+                    <button type="button" class="pf-preset-swatch" data-preset="avatar-preset:leaf-4" onclick="pfSelectPreset('avatar-preset:leaf-4')" title="Bunga">🌻</button>
+                    <button type="button" class="pf-preset-swatch" data-preset="avatar-preset:leaf-5" onclick="pfSelectPreset('avatar-preset:leaf-5')" title="Bumi">🌍</button>
+                </div>
+
+                <form id="pfProfileForm" onsubmit="return pfHandleSave(event)">
+                    <div class="pf-field">
+                        <label for="pfDisplayName">Nama Tampilan</label>
+                        <input type="text" id="pfDisplayName" placeholder="Nama panggilan kamu" maxlength="50">
+                    </div>
+
+                    <div class="pf-field">
+                        <label for="pfUsername">Username</label>
+                        <input type="text" id="pfUsername" disabled>
+                    </div>
+
+                    <div class="pf-field">
+                        <label for="pfEmail">Email</label>
+                        <input type="email" id="pfEmail" placeholder="nama@email.com" maxlength="200">
+                    </div>
+
+                    <div class="pf-field">
+                        <label for="pfBio">Tentang Saya</label>
+                        <textarea id="pfBio" rows="3" maxlength="160" placeholder="Ceritakan sedikit tentang kontribusi hijaumu di KotaKu..."></textarea>
+                    </div>
+
+                    <button type="submit" class="pf-save-btn" id="pfSaveBtn"><i class="fa-solid fa-check"></i> Simpan Perubahan</button>
+                    <div class="pf-msg" id="pfFormMsg"></div>
+                </form>
+
+                <div class="pf-divider"></div>
+
+                <div class="pf-password-toggle">
+                    <a href="#" onclick="pfTogglePassword(event)" id="pfPasswordLink" role="button" tabindex="0">
+                        <i class="fa-solid fa-lock"></i> Ubah Password
+                    </a>
+                </div>
+
+                <form id="pfPasswordForm" class="pf-password-form" onsubmit="return pfHandleChangePassword(event)">
+                    <div class="pf-field">
+                        <label for="pfCurrentPassword">Password Saat Ini</label>
+                        <input type="password" id="pfCurrentPassword" placeholder="••••••••" autocomplete="current-password">
+                    </div>
+                    <div class="pf-field">
+                        <label for="pfNewPassword">Password Baru</label>
+                        <input type="password" id="pfNewPassword" placeholder="Minimal 6 karakter" autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="pf-save-btn pf-save-btn--outline" id="pfPasswordBtn"><i class="fa-solid fa-key"></i> Perbarui Password</button>
+                    <div class="pf-msg" id="pfPasswordMsg"></div>
+                </form>
+
+                <button type="button" class="pf-logout-btn" onclick="pfLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="eco-bottom-nav" id="ecoBottomNav">
+        <div class="ebn-indicator" id="ebnIndicator"></div>
+
+        <button class="ebn-item active" type="button" data-view="dashboard" onclick="navigateTo('dashboard')">
+            <div class="ebn-icon"><i class="fa-solid fa-house"></i></div>
+            <span class="ebn-tooltip">Beranda</span>
+        </button>
+
+        <button class="ebn-item" type="button" data-view="map" onclick="navigateTo('map')">
+            <div class="ebn-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+            <span class="ebn-tooltip">Peta</span>
+        </button>
+
+        <button class="ebn-report-btn" type="button" onclick="handleQuickReportClick()" aria-label="Laporkan masalah">
+            <i class="fa-solid fa-bullhorn"></i>
+        </button>
+
+        <button class="ebn-item" type="button" data-view="scanner" onclick="navigateTo('scanner')">
+            <div class="ebn-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <span class="ebn-tooltip">Scan</span>
+        </button>
+
+        <button class="ebn-item" type="button" onclick="ebnProfileClick()">
+            <div class="ebn-icon" id="ebnProfileIcon"><i class="fa-solid fa-user"></i></div>
+            <span class="ebn-tooltip">Profil</span>
+        </button>
+    </nav>
+
+    <div id="kkLogoPopoverBackdrop" class="kk-logo-popover-backdrop" onclick="closeLogoPopover()"></div>
+    <div id="kkLogoPopover" class="kk-logo-popover" role="dialog" aria-modal="false" aria-label="Pohon KotaKu">
+        <button type="button" class="kk-lp-close" onclick="closeLogoPopover()" aria-label="Tutup">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="kk-lp-header">
+            <span class="kk-lp-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> easter egg</span>
+            <h4>Pohon KotaKu</h4>
+        </div>
+
+        <svg viewBox="0 0 120 120" class="kk-tree" id="kkTreeSvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pohon virtual KotaKu">
+            <ellipse class="kk-tree-part" data-level="0" cx="60" cy="104" rx="34" ry="8" fill="#7c5a3a" opacity="0.35"/>
+
+            <circle class="kk-tree-part" data-level="1" cx="60" cy="98" r="5" fill="#8a5a2b"/>
+
+            <g class="kk-tree-part" data-level="2">
+                <path d="M60,98 C60,86 60,80 60,72" stroke="var(--tree-color)" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M60,80 C52,78 48,72 48,66 C56,66 60,72 60,80 Z" fill="var(--primary-green)"/>
+                <path d="M60,84 C68,82 72,76 72,70 C64,70 60,76 60,84 Z" fill="var(--tree-color)"/>
+            </g>
+
+            <g class="kk-tree-part" data-level="3">
+                <rect x="57" y="60" width="6" height="38" rx="3" fill="#7a5230"/>
+                <circle cx="60" cy="52" r="20" fill="var(--tree-color)"/>
+                <circle cx="46" cy="60" r="13" fill="var(--primary-green)"/>
+                <circle cx="74" cy="60" r="13" fill="var(--primary-green)"/>
+            </g>
+
+            <g class="kk-tree-part" data-level="4">
+                <rect x="57" y="46" width="6" height="52" rx="3" fill="#6b4826"/>
+                <circle cx="60" cy="38" r="26" fill="var(--tree-color)"/>
+                <circle cx="38" cy="52" r="17" fill="var(--primary-green)"/>
+                <circle cx="82" cy="52" r="17" fill="var(--primary-green)"/>
+                <circle cx="50" cy="30" r="3" fill="var(--accent-yellow)"/>
+                <circle cx="72" cy="42" r="3" fill="var(--accent-yellow)"/>
+            </g>
+
+            <g class="kk-tree-part" data-level="5">
+                <rect x="57" y="46" width="6" height="52" rx="3" fill="#6b4826"/>
+                <circle cx="60" cy="38" r="26" fill="var(--tree-color)"/>
+                <circle cx="38" cy="52" r="17" fill="var(--primary-green)"/>
+                <circle cx="82" cy="52" r="17" fill="var(--primary-green)"/>
+                <rect x="16" y="88" width="5" height="18" rx="2" fill="#7a5230"/>
+                <circle cx="18" cy="82" r="13" fill="var(--primary-green)"/>
+                <rect x="97" y="88" width="5" height="18" rx="2" fill="#7a5230"/>
+                <circle cx="99" cy="82" r="13" fill="var(--primary-green)"/>
+                <circle cx="50" cy="30" r="3" fill="var(--accent-yellow)"/>
+                <circle cx="72" cy="42" r="3" fill="var(--accent-yellow)"/>
+            </g>
+        </svg>
+
+        <p class="kk-lp-stage-name" id="kkStageName">Benih</p>
+        <p class="kk-lp-count" id="kkTapCount">0 interaksi hijau</p>
+        <div class="kk-lp-progress"><div class="kk-lp-progress-fill" id="kkProgressFill"></div></div>
+        <p class="kk-lp-next" id="kkNextStageHint"></p>
+
+        <div class="kk-lp-fact">
+            <i class="fa-solid fa-lightbulb"></i>
+            <p id="kkFactText">Memuat fakta hijau...</p>
+        </div>
+    </div>
+
+    <script src="JS.js"></script>
+</body>
+</html>
