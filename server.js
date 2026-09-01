@@ -13,10 +13,25 @@ const jwt = require("jsonwebtoken");
 const PORT = process.env.PORT || 3000;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "";
 const JWT_SECRET = process.env.JWT_SECRET || "";
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, "kotaku.db");
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://127.0.0.1:3000")
   .split(",")
   .map((s) => s.trim());
+
+const IS_SERVERLESS = !!process.env.VERCEL;
+const BUNDLED_DB_PATH = path.join(__dirname, "kotaku.db");
+let DB_PATH = process.env.DB_PATH || BUNDLED_DB_PATH;
+
+if (IS_SERVERLESS && !process.env.DB_PATH) {
+  const tmpDbPath = path.join("/tmp", "kotaku.db");
+  try {
+    if (!fs.existsSync(tmpDbPath)) {
+      fs.copyFileSync(BUNDLED_DB_PATH, tmpDbPath);
+    }
+    DB_PATH = tmpDbPath;
+  } catch (err) {
+    console.error("[ERROR] Gagal menyalin database ke /tmp:", err.message);
+  }
+}
 
 if (!ADMIN_USERNAME) {
   console.warn(
