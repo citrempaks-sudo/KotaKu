@@ -15,7 +15,19 @@ const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "";
 const JWT_SECRET = process.env.JWT_SECRET || "";
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://127.0.0.1:3000")
   .split(",")
-  .map((s) => s.trim());
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+[
+  process.env.VERCEL_URL,
+  process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  process.env.VERCEL_BRANCH_URL,
+].forEach((host) => {
+  if (host) {
+    const url = `https://${host}`;
+    if (!ALLOWED_ORIGINS.includes(url)) ALLOWED_ORIGINS.push(url);
+  }
+});
 
 const IS_SERVERLESS = !!process.env.VERCEL;
 const BUNDLED_DB_PATH = path.join(__dirname, "kotaku.db");
@@ -80,6 +92,14 @@ if (!reportColumns.includes("user_id")) {
 }
 
 const app = express();
+
+// Vercel (dan proxy sejenis) selalu mengirim header X-Forwarded-For.
+// Tanpa ini, express-rate-limit melempar ValidationError karena curiga
+// header tsb bisa dipalsukan oleh client langsung.
+if (IS_SERVERLESS) {
+  app.set("trust proxy", 1);
+}
+
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -336,7 +356,7 @@ function authenticateOptional(req, res, next) {
       const payload = jwt.verify(token, JWT_SECRET);
       req.userId = payload.sub;
     } catch (err) {
-      // Token tidak valid/kedaluwarsa -> anggap tamu, jangan blokir laporan
+      
     }
   }
   next();
