@@ -675,6 +675,13 @@ body {
 .bg-white .text-slate-700, [class*="bg-white/"] .text-slate-700,
 .bg-white .text-slate-800, [class*="bg-white/"] .text-slate-800 { color: #1e293b !important; }
 
+[class*="bg-slate-900"] .text-slate-300, [class*="bg-slate-800"] .text-slate-300,
+[class*="bg-black"] .text-slate-300 { color: #cbd5e1 !important; }
+[class*="bg-slate-900"] .text-slate-400, [class*="bg-slate-800"] .text-slate-400,
+[class*="bg-black"] .text-slate-400 { color: #94a3b8 !important; }
+[class*="bg-slate-900"] .text-slate-500, [class*="bg-slate-800"] .text-slate-500,
+[class*="bg-black"] .text-slate-500 { color: #64748b !important; }
+
 #navbar { background-color: var(--nav-bg); }
 
 :root {
