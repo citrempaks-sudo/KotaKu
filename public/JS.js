@@ -1757,33 +1757,47 @@ async function plHandleSubmit(e) {
     const endpoint = plMode === 'register' ? '/api/auth/register' : '/api/auth/login';
     const body = plMode === 'register' ? { username, password, email } : { username, password };
 
-    try {
-        const res = await fetch(PL_API_BASE + endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        const data = await res.json();
+    const PL_MAX_RETRIES = 2;
+    const PL_RETRY_DELAY_MS = 1500;
 
-        if (!res.ok) {
-            msg.textContent = data.error || 'Terjadi kesalahan.';
+    for (let attempt = 0; attempt <= PL_MAX_RETRIES; attempt++) {
+        try {
+            if (attempt > 0) {
+                btn.textContent = 'Menghubungkan ulang ke server...';
+                await new Promise((resolve) => setTimeout(resolve, PL_RETRY_DELAY_MS));
+            }
+
+            const res = await fetch(PL_API_BASE + endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                msg.textContent = data.error || 'Terjadi kesalahan.';
+                msg.className = 'pl-msg error';
+            } else {
+                localStorage.setItem('ecohub_token', data.token);
+                if (data.user) plApplyLoggedInUI(data.user);
+                msg.textContent = plMode === 'register'
+                    ? 'Akun berhasil dibuat! Mengalihkan...'
+                    : 'Berhasil masuk! Mengalihkan...';
+                msg.className = 'pl-msg ok';
+                setTimeout(closeLoginModal, 900);
+            }
+            break; 
+        } catch (err) {
+            if (attempt < PL_MAX_RETRIES) {
+                continue; 
+            }
+            msg.textContent = 'Tidak dapat terhubung ke server backend. Server mungkin sedang "bangun" (cold start) \u2014 coba tekan Masuk sekali lagi.';
             msg.className = 'pl-msg error';
-        } else {
-            localStorage.setItem('ecohub_token', data.token);
-            if (data.user) plApplyLoggedInUI(data.user);
-            msg.textContent = plMode === 'register'
-                ? 'Akun berhasil dibuat! Mengalihkan...'
-                : 'Berhasil masuk! Mengalihkan...';
-            msg.className = 'pl-msg ok';
-            setTimeout(closeLoginModal, 900);
         }
-    } catch (err) {
-        msg.textContent = 'Tidak dapat terhubung ke server backend (' + PL_API_BASE + ').';
-        msg.className = 'pl-msg error';
-    } finally {
-        btn.disabled = false;
-        btn.textContent = plMode === 'register' ? 'Daftar' : 'Masuk';
     }
+
+    btn.disabled = false;
+    btn.textContent = plMode === 'register' ? 'Daftar' : 'Masuk';
 
     return false;
 }
