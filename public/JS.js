@@ -733,24 +733,53 @@ async function submitReport() {
         date: dateString
     };
 
-    try {
-        const headers = { 'Content-Type': 'application/json' };
-        const token = plGetToken();
-        if (token) headers['Authorization'] = 'Bearer ' + token;
+    const btn = document.getElementById('btnSubmitReport');
+    const btnOriginalText = btn ? btn.textContent : '';
+    if (btn) btn.disabled = true;
 
-        const res = await fetch('/api/reports', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(payload)
-        });
-        if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            throw new Error(data.error || 'Gagal mengirim laporan');
+    const RP_MAX_RETRIES = 2;
+    const RP_RETRY_DELAY_MS = 1500;
+    let sendSucceeded = false;
+
+    for (let attempt = 0; attempt <= RP_MAX_RETRIES; attempt++) {
+        let res;
+        try {
+            if (attempt > 0) {
+                if (btn) btn.textContent = 'Menghubungkan ulang ke server...';
+                await new Promise((resolve) => setTimeout(resolve, RP_RETRY_DELAY_MS));
+            }
+
+            const headers = { 'Content-Type': 'application/json' };
+            const token = plGetToken();
+            if (token) headers['Authorization'] = 'Bearer ' + token;
+
+            res = await fetch('/api/reports', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload)
+            });
+        } catch (err) {
+
+            if (attempt < RP_MAX_RETRIES) continue;
+            if (btn) { btn.disabled = false; btn.textContent = btnOriginalText; }
+            alert('Laporan gagal dikirim: ' + err.message + '\n\nKalau server sedang "bangun" (cold start), coba kirim sekali lagi.');
+            return;
         }
-    } catch (err) {
-        alert('Laporan gagal dikirim: ' + err.message);
-        return;
+
+        if (!res.ok) {
+
+            const data = await res.json().catch(() => ({}));
+            if (btn) { btn.disabled = false; btn.textContent = btnOriginalText; }
+            alert('Laporan gagal dikirim: ' + (data.error || 'Terjadi kesalahan.'));
+            return;
+        }
+
+        sendSucceeded = true;
+        break;
     }
+
+    if (btn) { btn.disabled = false; btn.textContent = btnOriginalText; }
+    if (!sendSucceeded) return;
 
     if (temporaryMarker) {
         mapInstance.removeLayer(temporaryMarker);
@@ -1757,6 +1786,9 @@ async function plHandleSubmit(e) {
     const endpoint = plMode === 'register' ? '/api/auth/register' : '/api/auth/login';
     const body = plMode === 'register' ? { username, password, email } : { username, password };
 
+    // Server serverless (Vercel) kadang "tidur" kalau lama tidak diakses (cold start),
+    // sehingga percobaan pertama bisa gagal/timeout. Kita coba ulang otomatis
+    // sebanyak PL_MAX_RETRIES kali sebelum benar-benar menampilkan pesan error ke user.
     const PL_MAX_RETRIES = 2;
     const PL_RETRY_DELAY_MS = 1500;
 
@@ -1786,10 +1818,10 @@ async function plHandleSubmit(e) {
                 msg.className = 'pl-msg ok';
                 setTimeout(closeLoginModal, 900);
             }
-            break; 
+            break; // request berhasil sampai ke server (baik sukses maupun ditolak), tidak perlu retry lagi
         } catch (err) {
             if (attempt < PL_MAX_RETRIES) {
-                continue; 
+                continue; // fetch gagal total (kemungkinan cold start) -> coba lagi
             }
             msg.textContent = 'Tidak dapat terhubung ke server backend. Server mungkin sedang "bangun" (cold start) \u2014 coba tekan Masuk sekali lagi.';
             msg.className = 'pl-msg error';
