@@ -36,9 +36,9 @@
 
 | Nama | Peran | GitHub |
 |------|-------|--------|
-| **Miftahul Satriawan** | Project Lead & Backend Developer | [@citrempaks](https://github.com/[citrempaks) |
-| **Ahmad Danish Daffadin** | Frontend Developer | [@Jonmayxd](https://github.com/[Jonmayxd]) |
-| **Muhammad Faza Syahrul Akbar** | UI/UX Designer | [@PanjolSyah](https://github.com/[PanjolSyah]) |
+| **Miftahul Satriawan** | Project Lead & Backend Developer | [@citrempaks](https://github.com/[citrempaks-sudo) |
+| **Ahmad Danish Daffadin** | Frontend Developer | [@Jonmayxd](https://github.com/[Jonmayxd-sudo]) |
+| **Muhammad Faza Syahrul Akbar** | UI/UX Designer | [@PanjolSyah](https://github.com/[PanjolSyah-sudo]) |
 
 **Nama Tim:** Regu Anggrek
 
