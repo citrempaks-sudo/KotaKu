@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    name: Lint, Build Check & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build check (pastikan server.js bisa dimuat tanpa error)
+        run: npm run build:check
+
+      - name: Jalankan test
+        run: npm test
+        env:
+          JWT_SECRET: ci-test-secret-key-not-for-production
+          ADMIN_USERNAME: ci-test-admin
