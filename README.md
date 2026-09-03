@@ -3,9 +3,9 @@
 # 🌿 KotaKu
 ### Solusi Smart City & Ekonomi Sirkular untuk Kota yang Lebih Hijau
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_Site-success?style=for-the-badge)](https://[URL_DEMO])
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://[URL_REPO])
-[![License](https://img.shields.io/badge/License-Belum_Ditentukan-blue?style=for-the-badge)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_Site-success?style=for-the-badge)](kota-kuu.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)]([https://[URL_REPO]](https://github.com/citrempaks-sudo/KotaKu))
+[![License](https://img.shields.io/badge/License-Belum_Ditentukan-blue?style=for-the-badge)](All Rights Reserved)
 
 **Submission for ITECHNO CUP 2026 - Web Development**
 
