@@ -4,7 +4,7 @@
 ### Solusi Smart City & Ekonomi Sirkular untuk Kota yang Lebih Hijau
 
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_Site-success?style=for-the-badge)](https://kota-kuu.vercel.app)
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://[URL_REPO])
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/citrempaks-sudo/KotaKu)
 [![License](https://img.shields.io/badge/License-Belum_Ditentukan-blue?style=for-the-badge)](LICENSE)
 
 **Submission for ITECHNO CUP 2026 - Web Development**
@@ -306,7 +306,7 @@ itec/
 
 ### Prerequisites
 
-Pastikan Anda telah menginstall:
+Pastikan telah menginstall:
 - **Node.js** v18.x atau lebih tinggi (untuk varian backend Node.js)
 - **npm**
 - **Python 3** (opsional, jika ingin menjalankan varian backend Flask)
@@ -315,8 +315,7 @@ Pastikan Anda telah menginstall:
 ### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/[username]/[repo-name].git
-cd [repo-name]
+https://github.com/citrempaks-sudo/KotaKu
 ```
 
 ### 2️⃣ Install Dependencies
@@ -345,7 +344,7 @@ ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ADMIN_USERNAME="[]"
 ```
 
-> ⚠️ Jangan pernah memasukkan API key, password, token, secret, atau credential asli ke dalam repository publik.
+> Jangan pernah memasukkan API key, password, token, secret, atau credential asli ke dalam repository publik.
 
 ### 4️⃣ Setup Database
 
