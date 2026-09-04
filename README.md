@@ -5,7 +5,7 @@
 
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_Site-success?style=for-the-badge)](https://kota-kuu.vercel.app)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/citrempaks-sudo/KotaKu)
-[![License](https://img.shields.io/badge/License-Belum_Ditentukan-blue?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
 **Submission for ITECHNO CUP 2026 - Web Development**
 
@@ -36,9 +36,9 @@
 
 | Nama | Peran | GitHub |
 |------|-------|--------|
-| **Miftahul Satriawan** | Project Lead & Backend Developer | [@citrempaks](https://github.com/[citrempaks) |
-| **Ahmad Danish Daffadin** | Frontend Developer | [@Jonmayxd](https://github.com/[Jonmayxd]) |
-| **Muhammad Faza Syahrul Akbar** | UI/UX Designer | [@PanjolSyah](https://github.com/[PanjolSyah]) |
+| **Miftahul Satriawan** | Project Lead & Backend Developer | [@citrempaks](https://github.com/[citrempaks-sudo) |
+| **Ahmad Danish Daffadin** | Frontend Developer | [@Jonmayxd](https://github.com/[Jonmayxd-sudo]) |
+| **Muhammad Faza Syahrul Akbar** | UI/UX Designer | [@PanjolSyah](https://github.com/[PanjolSyah-sudo]) |
 
 **Nama Tim:** Regu Anggrek
 
@@ -306,7 +306,7 @@ itec/
 
 ### Prerequisites
 
-Pastikan telah menginstall:
+Pastikan Anda telah menginstall:
 - **Node.js** v18.x atau lebih tinggi (untuk varian backend Node.js)
 - **npm**
 - **Python 3** (opsional, jika ingin menjalankan varian backend Flask)
@@ -315,7 +315,7 @@ Pastikan telah menginstall:
 ### 1️⃣ Clone Repository
 
 ```bash
-https://github.com/citrempaks-sudo/KotaKu
+git clone https://github.com/citrempaks-sudo/KotaKu
 ```
 
 ### 2️⃣ Install Dependencies
@@ -344,7 +344,7 @@ ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ADMIN_USERNAME="[]"
 ```
 
-> Jangan pernah memasukkan API key, password, token, secret, atau credential asli ke dalam repository publik.
+> ⚠️ Jangan pernah memasukkan API key, password, token, secret, atau credential asli ke dalam repository publik.
 
 ### 4️⃣ Setup Database
 
@@ -561,7 +561,7 @@ Beberapa langkah keamanan yang sudah diterapkan pada backend:
 
 ## 📄 Lisensi
 
-`All Rights Reserved`
+`MIT License` — lihat file [LICENSE](LICENSE) untuk ketentuan lengkap.
 
 ---
 
