@@ -102,13 +102,13 @@ Aspek inovasi utamanya terletak pada penggabungan **pelaporan warga**, **AI di s
 
 ### Screenshot Aplikasi
 <div align="center">
-  <img src="[URL_SCREENSHOT_1]" alt="Dashboard KotaKu" width="800"/>
+  <img src="docs/screenshots/dashboard.png" alt="Dashboard KotaKu" width="800"/>
   <p><em>Dashboard - Tampilan utama aplikasi</em></p>
 
-  <img src="[URL_SCREENSHOT_2]" alt="Peta Laporan Warga" width="800"/>
+  <img src="docs/screenshots/peta-laporan-warga.png" alt="Peta Laporan Warga" width="800"/>
   <p><em>Peta Laporan Warga - Pemantauan laporan lingkungan</em></p>
 
-  <img src="[URL_SCREENSHOT_3]" alt="AR Waste Scanner" width="800"/>
+  <img src="docs/screenshots/ar-waste-scanner.png" alt="AR Waste Scanner" width="800"/>
   <p><em>AR Waste Scanner - Klasifikasi sampah berbasis AI</em></p>
 </div>
 
@@ -338,10 +338,13 @@ Buat file `.env` di root proyek (jangan pernah commit file ini ke repository):
 
 ```env
 PORT=3000
-ADMIN_API_KEY="[isi_dengan_kunci_admin_anda]"
-JWT_SECRET="[isi_dengan_secret_jwt_anda]"
+JWT_SECRET="[isi_dengan_secret_jwt_anda_sendiri_yang_acak_dan_panjang]"
+ADMIN_USERNAME="[isi_dengan_username_admin_pilihan_anda]"
 ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-ADMIN_USERNAME="[]"
+
+# Opsional — hanya perlu diisi jika ingin memakai lokasi file database
+# yang berbeda dari default (kotaku.db di root proyek)
+# DB_PATH=./kotaku.db
 ```
 
 > ⚠️ Jangan pernah memasukkan API key, password, token, secret, atau credential asli ke dalam repository publik.
@@ -392,9 +395,11 @@ npm start
 
 # Seed ulang database
 npm run seed
-```
 
-> Skrip `test` dan `lint` belum tersedia pada `package.json` saat ini.
+# Test & lint
+npm test
+npm run lint
+```
 
 ### User Guide
 
@@ -421,7 +426,7 @@ Aplikasi memiliki **satu peran admin khusus**, ditentukan melalui variabel `ADMI
 ```
 Development (Node.js) : http://localhost:3000/api
 Development (Python)  : http://localhost:5000/api
-Production             : https://[domain]/api
+Production             : https://kota-kuu.vercel.app/api
 ```
 
 ### Authentication
