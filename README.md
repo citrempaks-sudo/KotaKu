@@ -114,6 +114,7 @@ Aspek inovasi utamanya terletak pada penggabungan **pelaporan warga**, **AI di s
 
 ### Video Demo
 📹 **[Link Video Demo (dekstop)](https://youtu.be/uiQqtVCx0jQ?si=JfxXa7O2_9Nm_BhT)** 
+
 📹 **[Link Video Demo (mobile)](https://youtube.com/shorts/xbiJCRBXVao?si=FOQgKN0V6hVkoRSO)** 
 
 ---
