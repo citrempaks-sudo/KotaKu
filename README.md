@@ -36,9 +36,9 @@
 
 | Nama | Peran | GitHub |
 |------|-------|--------|
-| **Miftahul Satriawan** | Project Lead & Backend Developer | [@citrempaks](https://github.com/[citrempaks-sudo]) |
-| **Ahmad Danish Daffadin** | Frontend Developer | [@Jonmayxd](https://github.com) |
-| **Muhammad Faza Syahrul Akbar** | UI/UX Designer | [@PanjolSyah](https://github.com/[PanjolSyah-sudo]) |
+| **Miftahul Satriawan** | Project Lead & Backend Developer | [@citrempaks](https://github.com/citrempaks-sudo) |
+| **Ahmad Danish Daffadin** | Frontend Developer | [@Jonmayxd](https://github.com/Jonmayxd-sudo) |
+| **Muhammad Faza Syahrul Akbar** | UI/UX Designer | [@PanjolSyah](https://github.com/PanjolSyah-sudo) |
 
 **Nama Tim:** Regu Anggrek
 
@@ -113,7 +113,7 @@ Aspek inovasi utamanya terletak pada penggabungan **pelaporan warga**, **AI di s
 </div>
 
 ### Video Demo
-📹 **[Link Video Demo (dekstop)](belum ada ygy)** 
+📹 **[Link Video Demo (dekstop)]([belum ada ygy](https://youtu.be/uiQqtVCx0jQ?si=JfxXa7O2_9Nm_BhT)** 
 📹 **[Link Video Demo (mobile)](https://youtube.com/shorts/xbiJCRBXVao?si=FOQgKN0V6hVkoRSO)** 
 
 ---
